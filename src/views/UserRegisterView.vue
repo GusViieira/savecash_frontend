@@ -9,21 +9,24 @@ const emits = defineEmits(['close'])
 const form = ref()
 const valid = ref(true)
 
-const show2 = ref(false)
 const loading = ref(false)
 const warning = ref('')
 
 const rules = {
   required: (value: string) => !!value || 'Obrigatório.',
   min: (v: string) => v.length >= 8 || 'Minimo 8 caracteres',
+  passwordMatch: (v: string) =>
+    v === state.value.registerUser.password || 'As senhas não coincidem',
 }
 
 interface State {
   registerUser: RegisterUserRequestModel
+  passwordConfirmation: string
 }
 
 const state = ref<State>({
   registerUser: {} as RegisterUserRequestModel,
+  passwordConfirmation: '',
 })
 
 const validation = async () => {
@@ -54,10 +57,11 @@ const submit = async () => {
 </script>
 <template>
   <LoadingComponent :value="loading" />
-  <div class="pa-4 text-center">
+  <div class="pa-15 text-center">
     <v-card title="Criar uma conta" color="background">
-      <v-form ref="form" v-model="valid">
-        <v-card-text class="pt-5 text-start">
+      <v-divider></v-divider>
+      <v-card-text class="pt-5 text-start">
+        <v-form ref="form" v-model="valid" lazy-validation>
           <v-row>
             <v-col>
               <v-text-field
@@ -69,6 +73,7 @@ const submit = async () => {
                 theme="dark"
                 required
                 :rules="[() => !!state.registerUser.name || 'Obrigatório.']"
+                class="pb-2"
               />
               <v-text-field
                 v-model="state.registerUser.surname"
@@ -79,6 +84,7 @@ const submit = async () => {
                 theme="dark"
                 required
                 :rules="[() => !!state.registerUser.surname || 'Obrigatório.']"
+                class="pb-2"
               />
               <v-text-field
                 v-model="state.registerUser.email"
@@ -92,29 +98,38 @@ const submit = async () => {
                   () => !!state.registerUser.email || 'Obrigatório.',
                   (v) => /.+@.+/.test(v) || 'Invalid Email address',
                 ]"
+                class="pb-2"
               />
               <v-text-field
                 v-model="state.registerUser.password"
-                :append-icon="show2 ? 'mdi-eye-off' : 'mdi-eye'"
                 :rules="[rules.required, rules.min]"
-                :type="show2 ? 'text' : 'password'"
                 label="Senha"
                 variant="solo-filled"
                 density="compact"
                 name="input-10-2"
                 theme="dark"
-                @click:append="show2 = !show2"
+                class="pb-2"
+              ></v-text-field>
+              <v-text-field
+                v-model="state.passwordConfirmation"
+                :rules="[rules.required, rules.min, rules.passwordMatch]"
+                label="Confirmar senha"
+                variant="solo-filled"
+                density="compact"
+                name="input-10-2"
+                theme="dark"
+                class="pb-2"
               ></v-text-field>
             </v-col>
           </v-row>
-        </v-card-text>
-        <v-divider></v-divider>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn text="Close" variant="plain" @click="emits('close', false)"></v-btn>
-          <v-btn color="primary" text="Save" variant="tonal" @click="validation"></v-btn>
-        </v-card-actions>
-      </v-form>
+        </v-form>
+      </v-card-text>
+      <v-divider></v-divider>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn text="Cancelar" variant="plain" @click="emits('close', false)"></v-btn>
+        <v-btn color="primary" text="Criar" variant="tonal" @click="validation"></v-btn>
+      </v-card-actions>
     </v-card>
     <v-alert density="compact" :text="warning" type="warning" v-if="warning" class="mt-2"></v-alert>
   </div>

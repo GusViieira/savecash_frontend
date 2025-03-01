@@ -15,6 +15,7 @@ const valid = ref(true)
 const loading = ref(false)
 const dialog = ref(false)
 const store = userStore()
+const show2 = ref(false)
 
 interface State {
   login: LoginRequestModel
@@ -69,7 +70,7 @@ const submit = async () => {
     {{ state.error }}
   </v-snackbar>
   <div class="d-flex align-center" style="height: 100vh">
-    <v-sheet width="30%" class="bg-transparent ml-15">
+    <v-sheet width="20%" class="bg-transparent ml-16">
       <v-form ref="form" v-model="valid">
         <v-row>
           <v-col>
@@ -91,11 +92,18 @@ const submit = async () => {
               label="Senha"
               variant="solo-filled"
               density="compact"
-              type="password"
               theme="dark"
               required
               :rules="[() => !!state.login.password || 'Senha é obrigatória']"
+              :append-inner-icon="show2 ? 'mdi-eye-off' : 'mdi-eye'"
+              @click:append-inner="show2 = !show2"
+              :type="show2 ? 'text' : 'password'"
             />
+            <v-row>
+              <v-col class="text-right mb-1">
+                <a @click="dialog = true" style="cursor: pointer">Esqueci a senha</a>
+              </v-col>
+            </v-row>
           </v-col>
         </v-row>
         <v-row class="d-flex justify-center">
@@ -106,14 +114,15 @@ const submit = async () => {
       </v-form>
       <v-row class="d-flex justify-center">
         <v-col cols="auto">
-          <v-btn variant="plain" color="primary">Esqueci a senha</v-btn>
+          <v-text
+            >Não tem uma conta?
+            <a @click="dialog = true" style="cursor: pointer">Inscrever-se</a></v-text
+          >
         </v-col>
       </v-row>
-      <v-row class="d-flex justify-center">
-        <v-col cols="auto">
-          <v-btn variant="plain" color="primary" @click="dialog = true">Inscrever-se</v-btn>
-        </v-col>
-      </v-row>
+    </v-sheet>
+    <v-sheet class="bg-transparent text-right mr-10" width="80%">
+      <img src="@/assets/images/login.svg" alt="Login" />
     </v-sheet>
     <div class="pa-4">
       <v-dialog v-model="dialog" max-width="600">
