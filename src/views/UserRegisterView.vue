@@ -106,9 +106,9 @@ const submit = async () => {
                 label="Senha"
                 variant="solo-filled"
                 density="compact"
-                name="input-10-2"
                 theme="dark"
                 class="pb-2"
+                type="password"
               ></v-text-field>
               <v-text-field
                 v-model="state.passwordConfirmation"
@@ -116,9 +116,9 @@ const submit = async () => {
                 label="Confirmar senha"
                 variant="solo-filled"
                 density="compact"
-                name="input-10-2"
                 theme="dark"
                 class="pb-2"
+                type="password"
               ></v-text-field>
             </v-col>
           </v-row>

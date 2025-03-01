@@ -114,9 +114,9 @@ const submit = async () => {
       </v-form>
       <v-row class="d-flex justify-center">
         <v-col cols="auto">
-          <v-text
+          <span
             >Não tem uma conta?
-            <a @click="dialog = true" style="cursor: pointer">Inscrever-se</a></v-text
+            <a @click="dialog = true" style="cursor: pointer">Inscrever-se</a></span
           >
         </v-col>
       </v-row>
