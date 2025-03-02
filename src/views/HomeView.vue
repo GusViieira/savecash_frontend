@@ -6,6 +6,6 @@ const storeUser = userStore()
 
 <template>
   <div>
-    <h1>Olá {{ storeUser.name }}</h1>
+    <h1>Olá, {{ storeUser.name }} 👋</h1>
   </div>
 </template>
