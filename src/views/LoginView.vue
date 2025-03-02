@@ -101,7 +101,7 @@ const submit = async () => {
             />
             <v-row>
               <v-col class="text-right mb-1">
-                <a @click="dialog = true" style="cursor: pointer">Esqueci a senha</a>
+                <a @click="router.push({ name: 'ResetPassword' })" style="cursor: pointer">Esqueci a senha</a>
               </v-col>
             </v-row>
           </v-col>
