@@ -2,7 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
 import LoginView from '@/views/LoginView.vue'
 import LayoutBase from '@/components/layouts/LayoutBase.vue'
-import TransactionsView from '@/views/TransactionsView.vue'
+import TransactionsView from '@/views/transactions/TransactionsView.vue'
+import BoxesView from '@/views/boxes/BoxesView.vue'
 
 const routes = [
   {
@@ -23,6 +24,11 @@ const routes = [
         path: 'transactions',
         name: 'Transactions',
         component: TransactionsView,
+      },
+      {
+        path: 'boxes',
+        name: 'Boxes',
+        component: BoxesView,
       },
     ],
   },

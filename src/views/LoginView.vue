@@ -74,7 +74,7 @@ const submit = async () => {
     <v-row class="fill-height d-flex align-center justify-center mt-5">
       <v-col cols="12" md="6" lg="4">
         <v-sheet class="bg-transparent">
-          <v-form ref="form" v-model="valid">
+          <v-form ref="form" v-model="valid" @submit.prevent="validation">
             <v-row>
               <v-col>
                 <v-text-field
@@ -112,7 +112,7 @@ const submit = async () => {
             </v-row>
             <v-row class="d-flex justify-center">
               <v-col cols="auto">
-                <v-btn color="primary" @click="validation"> Login </v-btn>
+                <v-btn type="submit" color="primary" @click="validation"> Login </v-btn>
               </v-col>
             </v-row>
           </v-form>

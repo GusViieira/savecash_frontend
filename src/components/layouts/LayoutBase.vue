@@ -41,6 +41,7 @@ const isRail = ref(true)
           prepend-icon="mdi-cube-outline"
           title="Caixinhas"
           value="starred"
+          @click="router.push({ name: 'Boxes' })"
         ></v-list-item>
       </v-list>
       <v-list-item
