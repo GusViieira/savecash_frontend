@@ -5,7 +5,7 @@ const storeUser = userStore()
 </script>
 
 <template>
-  <main>
+  <div>
     <h1>Olá {{ storeUser.name }}</h1>
-  </main>
+  </div>
 </template>

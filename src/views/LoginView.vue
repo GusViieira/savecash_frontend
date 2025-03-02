@@ -49,6 +49,7 @@ const submit = async () => {
     }
     localStorage.setItem('token', response.data.content?.jwt as string)
     store.name = response.data.content?.name as string
+    store.email = response.data.content?.email as string
     loading.value = false
     router.push({ name: 'Home' })
   } catch (e) {
@@ -69,67 +70,70 @@ const submit = async () => {
   >
     {{ state.error }}
   </v-snackbar>
-  <div class="d-flex align-center" style="height: 100vh">
-    <v-sheet width="20%" class="bg-transparent ml-16">
-      <v-form ref="form" v-model="valid">
-        <v-row>
-          <v-col>
-            <v-text-field
-              v-model="state.login.email"
-              label="Email"
-              variant="solo-filled"
-              density="compact"
-              type="email"
-              theme="dark"
-              required
-              :rules="[
-                () => !!state.login.email || 'Email é obrigatório',
-                (v) => /.+@.+/.test(v) || 'Invalid Email address',
-              ]"
-            />
-            <v-text-field
-              v-model="state.login.password"
-              label="Senha"
-              variant="solo-filled"
-              density="compact"
-              theme="dark"
-              required
-              :rules="[() => !!state.login.password || 'Senha é obrigatória']"
-              :append-inner-icon="show2 ? 'mdi-eye-off' : 'mdi-eye'"
-              @click:append-inner="show2 = !show2"
-              :type="show2 ? 'text' : 'password'"
-            />
+  <v-container class="fill-height d-flex align-center justify-center mt-16">
+    <v-row class="fill-height d-flex align-center justify-center mt-5">
+      <v-col cols="12" md="6" lg="4">
+        <v-sheet class="bg-transparent">
+          <v-form ref="form" v-model="valid">
             <v-row>
-              <v-col class="text-right mb-1">
-                <a @click="dialog = true" style="cursor: pointer">Esqueci a senha</a>
+              <v-col>
+                <v-text-field
+                  v-model="state.login.email"
+                  label="Email"
+                  variant="solo-filled"
+                  density="compact"
+                  type="email"
+                  theme="dark"
+                  required
+                  :rules="[
+                    () => !!state.login.email || 'Email é obrigatório',
+                    (v) => /.+@.+/.test(v) || 'Email inválido',
+                  ]"
+                />
+
+                <v-text-field
+                  v-model="state.login.password"
+                  label="Senha"
+                  variant="solo-filled"
+                  density="compact"
+                  theme="dark"
+                  required
+                  :rules="[() => !!state.login.password || 'Senha é obrigatória']"
+                  :append-inner-icon="show2 ? 'mdi-eye-off' : 'mdi-eye'"
+                  @click:append-inner="show2 = !show2"
+                  :type="show2 ? 'text' : 'password'"
+                />
+                <v-row>
+                  <v-col class="text-right mb-1">
+                    <a @click="dialog = true" style="cursor: pointer">Esqueci a senha</a>
+                  </v-col>
+                </v-row>
               </v-col>
             </v-row>
-          </v-col>
-        </v-row>
-        <v-row class="d-flex justify-center">
-          <v-col cols="auto">
-            <v-btn color="primary" @click="validation"> Login </v-btn>
-          </v-col>
-        </v-row>
-      </v-form>
-      <v-row class="d-flex justify-center">
-        <v-col cols="auto">
-          <span
-            >Não tem uma conta?
-            <a @click="dialog = true" style="cursor: pointer">Inscrever-se</a></span
-          >
-        </v-col>
-      </v-row>
-    </v-sheet>
-    <v-sheet class="bg-transparent text-right mr-10" width="80%">
-      <img src="@/assets/images/login.svg" alt="Login" />
-    </v-sheet>
-    <div class="pa-4">
-      <v-dialog v-model="dialog" max-width="600">
-        <UserRegisterView @close="(v) => (dialog = v)" />
-      </v-dialog>
-    </div>
-  </div>
+            <v-row class="d-flex justify-center">
+              <v-col cols="auto">
+                <v-btn color="primary" @click="validation"> Login </v-btn>
+              </v-col>
+            </v-row>
+          </v-form>
+          <v-row class="d-flex justify-center">
+            <v-col cols="auto">
+              <span>
+                Não tem uma conta?
+                <a @click="dialog = true" style="cursor: pointer">Inscrever-se</a>
+              </span>
+            </v-col>
+          </v-row>
+        </v-sheet>
+      </v-col>
+      <v-col cols="12" md="6" lg="8" class="d-none d-md-flex align-center justify-center">
+        <img src="@/assets/images/login.svg" alt="Login" class="img-fluid" />
+      </v-col>
+    </v-row>
+    <v-dialog v-model="dialog" max-width="600">
+      <UserRegisterView @close="(v) => (dialog = v)" />
+    </v-dialog>
+  </v-container>
 </template>
 
 <style scoped>

@@ -1,39 +1,36 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
 import LoginView from '@/views/LoginView.vue'
+import LayoutBase from '@/components/layouts/LayoutBase.vue'
+import TransactionsView from '@/views/TransactionsView.vue'
+
+const routes = [
+  {
+    path: '/login',
+    name: 'Login',
+    component: LoginView,
+  },
+  {
+    path: '/',
+    component: LayoutBase, // Envolvendo as páginas protegidas
+    children: [
+      {
+        path: 'home',
+        name: 'Home',
+        component: HomeView,
+      },
+      {
+        path: 'transactions',
+        name: 'Transactions',
+        component: TransactionsView,
+      },
+    ],
+  },
+]
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [
-    {
-      path: '/',
-      redirect: '/login',
-    },
-    {
-      path: '/login',
-      name: 'Login',
-      component: LoginView,
-      meta: {
-        layout: 'none',
-      },
-    },
-    {
-      path: '/home',
-      name: 'Home',
-      component: HomeView,
-      meta: {
-        layout: 'none',
-      },
-    },
-    // {
-    //   path: '/about',
-    //   name: 'about',
-    //   // route level code-splitting
-    //   // this generates a separate chunk (About.[hash].js) for this route
-    //   // which is lazy-loaded when the route is visited.
-    //   component: () => import('../views/AboutView.vue'),
-    // },
-  ],
+  routes,
 })
 
 export default router
