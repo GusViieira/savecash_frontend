@@ -4,6 +4,8 @@ import LoginView from '@/views/LoginView.vue'
 import LayoutBase from '@/components/layouts/LayoutBase.vue'
 import TransactionsView from '@/views/transactions/TransactionsView.vue'
 import BoxesView from '@/views/boxes/BoxesView.vue'
+import SettingsView from '@/views/config/SettingView.vue'
+import GoalsView from '@/views/goals/GoalsView.vue'
 
 function isAuthenticated() {
   const token = localStorage.getItem('token')
@@ -36,6 +38,18 @@ const routes = [
         path: 'boxes',
         name: 'Boxes',
         component: BoxesView,
+        meta: { requiresAuth: true },
+      },
+      {
+        path: 'goals',
+        name: 'Goals',
+        component: GoalsView,
+        meta: { requiresAuth: true },
+      },
+      {
+        path: 'settings',
+        name: 'Settings',
+        component: SettingsView,
         meta: { requiresAuth: true },
       },
     ],
