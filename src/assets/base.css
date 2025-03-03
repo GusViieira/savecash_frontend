@@ -1,73 +1,80 @@
 /* color palette from <https://github.com/vuejs/theme> */
+/* Paleta de cores do Vue.js Theme */
 :root {
-  --vt-c-white: #ffffff;
-  --vt-c-white-soft: #f8f8f8;
-  --vt-c-white-mute: #f2f2f2;
+  /* Cores principais */
+  --vt-c-white: #ffffff; /* Branco puro */
+  --vt-c-white-soft: #f8f8f8; /* Branco mais suave */
+  --vt-c-white-mute: #f2f2f2; /* Branco ainda mais suave */
 
-  --vt-c-black: #181818;
-  --vt-c-black-soft: #222222;
-  --vt-c-black-mute: #282828;
+  --vt-c-black: #181818; /* Preto profundo */
+  --vt-c-black-soft: #222222; /* Preto suavizado */
+  --vt-c-black-mute: #282828; /* Preto um pouco mais claro */
 
-  --vt-c-indigo: #2c3e50;
+  /*--vt-c-indigo: #002a54; /* Azul escuro (índigo), cor padrão do texto */
 
-  --vt-c-divider-light-1: rgba(60, 60, 60, 0.29);
-  --vt-c-divider-light-2: rgba(60, 60, 60, 0.12);
-  --vt-c-divider-dark-1: rgba(84, 84, 84, 0.65);
-  --vt-c-divider-dark-2: rgba(84, 84, 84, 0.48);
+  /* Cores para divisores (linhas de separação) */
+  --vt-c-divider-light-1: rgba(60, 60, 60, 0.29); /* Linha de separação clara */
+  --vt-c-divider-light-2: rgba(60, 60, 60, 0.12); /* Linha mais suave */
+  --vt-c-divider-dark-1: rgba(84, 84, 84, 0.65); /* Linha de separação escura */
+  --vt-c-divider-dark-2: rgba(84, 84, 84, 0.48); /* Linha mais suave no modo escuro */
 
-  --vt-c-text-light-1: var(--vt-c-indigo);
-  --vt-c-text-light-2: rgba(60, 60, 60, 0.66);
-  --vt-c-text-dark-1: var(--vt-c-white);
-  --vt-c-text-dark-2: rgba(235, 235, 235, 0.64);
+  /* Cores para o texto */
+  --vt-c-text-light-1: var(--vt-c-indigo); /* Cor do texto no modo claro */
+  --vt-c-text-light-2: rgba(60, 60, 60); /* Texto mais fraco no modo claro */
+  --vt-c-text-dark-1: var(--vt-c-white); /* Cor do texto no modo escuro */
+  /*--vt-c-text-dark-2: rgba(235, 235, 235); /* Texto mais fraco no modo escuro */
 }
 
-/* semantic color variables for this project */
+/* Variáveis de cores semânticas para o projeto */
 :root {
-  --color-background: var(--vt-c-white);
-  --color-background-soft: var(--vt-c-white-soft);
-  --color-background-mute: var(--vt-c-white-mute);
+  --color-background: var(--vt-c-white); /* Fundo principal no modo claro */
+  --color-background-soft: var(--vt-c-white-soft); /* Fundo secundário no modo claro */
+  --color-background-mute: var(--vt-c-white-mute); /* Fundo de destaque no modo claro */
 
-  --color-border: var(--vt-c-divider-light-2);
-  --color-border-hover: var(--vt-c-divider-light-1);
+  --color-border: var(--vt-c-divider-light-2); /* Cor das bordas no modo claro */
+  --color-border-hover: var(--vt-c-divider-light-1); /* Borda ao passar o mouse */
 
-  --color-heading: var(--vt-c-text-light-1);
-  --color-text: var(--vt-c-text-light-1);
+  --color-heading: var(--vt-c-text-light-1); /* Cor dos títulos no modo claro */
+  --color-text: var(--vt-c-text-light-2); /* Cor do texto principal no modo claro */
 
-  --section-gap: 160px;
+  --section-gap: 160px; /* Espaçamento entre seções */
 }
 
+/* Define as cores no modo escuro usando media query */
 @media (prefers-color-scheme: dark) {
   :root {
-    --color-background: var(--vt-c-black);
-    --color-background-soft: var(--vt-c-black-soft);
-    --color-background-mute: var(--vt-c-black-mute);
+    --color-background: var(--vt-c-black); /* Fundo principal no modo escuro */
+    --color-background-soft: var(--vt-c-black-soft); /* Fundo secundário no modo escuro */
+    --color-background-mute: var(--vt-c-black-mute); /* Fundo de destaque no modo escuro */
 
-    --color-border: var(--vt-c-divider-dark-2);
-    --color-border-hover: var(--vt-c-divider-dark-1);
+    --color-border: var(--vt-c-divider-dark-2); /* Cor das bordas no modo escuro */
+    --color-border-hover: var(--vt-c-divider-dark-1); /* Borda ao passar o mouse no modo escuro */
 
-    --color-heading: var(--vt-c-text-dark-1);
-    --color-text: var(--vt-c-text-dark-2);
+    --color-heading: var(--vt-c-text-dark-1); /* Cor dos títulos no modo escuro */
+    --color-text: var(--vt-c-text-dark-2); /* Cor do texto principal no modo escuro */
   }
 }
 
+/* Reset básico para todos os elementos */
 *,
 *::before,
 *::after {
-  box-sizing: border-box;
-  margin: 0;
-  font-weight: normal;
+  box-sizing: border-box; /* Faz com que padding e border sejam incluídos no tamanho do elemento */
+  margin: 0; /* Remove margens padrão */
+  font-weight: normal; /* Fonte padrão sem negrito */
 }
 
+/* Estilização do corpo da página */
 body {
-  color: var(--color-text);
-  background: var(--color-background);
+  color: var(--color-text); /* Define a cor do texto conforme o tema */
+  background: var(--color-background); /* Define o fundo conforme o tema */
   transition:
     color 0.5s,
-    background-color 0.5s;
-  line-height: 1.6;
+    /* Suaviza a troca de cor do texto */ background-color 0.5s; /* Suaviza a troca de cor de fundo */
+  line-height: 1.6; /* Ajusta o espaçamento entre linhas */
   font-family:
     Inter,
-    -apple-system,
+    /* Fonte principal */ -apple-system,
     BlinkMacSystemFont,
     'Segoe UI',
     Roboto,
@@ -78,8 +85,8 @@ body {
     'Droid Sans',
     'Helvetica Neue',
     sans-serif;
-  font-size: 15px;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  font-size: 15px; /* Define o tamanho da fonte */
+  text-rendering: optimizeLegibility; /* Otimiza a renderização do texto */
+  -webkit-font-smoothing: antialiased; /* Suaviza fontes no macOS */
+  -moz-osx-font-smoothing: grayscale; /* Suaviza fontes no macOS */
 }

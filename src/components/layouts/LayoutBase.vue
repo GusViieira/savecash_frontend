@@ -1,18 +1,44 @@
 <script setup lang="ts">
 import { userStore } from '@/stores/userStore'
-import { ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
+import avatarSrc from '@/assets/images/avatar.svg'
+import { useRouter } from 'vue-router'
+import { useTheme } from 'vuetify'
 
+const theme = useTheme()
 const store = userStore()
 const router = useRouter()
 
-import avatarSrc from '@/assets/images/avatar.svg'
-import { useRouter } from 'vue-router'
-
 const isRail = ref(true)
+
+const savedTheme = localStorage.getItem('theme') || 'light'
+theme.global.name.value = savedTheme
+
+const applyThemeToBody = (themeName: string) => {
+  document.documentElement.style.setProperty(
+    '--color-background',
+    themeName === 'dark' ? '#181818' : '#ffffff',
+  )
+}
+
+const logout = () => {
+  localStorage.removeItem('token')
+  theme.global.name.value = 'dark'
+  router.push({ name: 'Login' })
+}
+
+const toggleTheme = () => {
+  const newTheme = theme.global.current.value.dark ? 'light' : 'dark'
+  theme.global.name.value = newTheme
+  localStorage.setItem('theme', newTheme)
+  applyThemeToBody(newTheme)
+}
+watch(() => theme.global.name.value, applyThemeToBody)
+onMounted(() => applyThemeToBody(savedTheme))
 </script>
 <template>
   <v-layout>
-    <v-navigation-drawer v-model:rail="isRail" rail permanent expand-on-hover theme="dark">
+    <v-navigation-drawer v-model:rail="isRail" permanent expand-on-hover>
       <v-list>
         <v-avatar
           :size="isRail ? 40 : 200"
@@ -32,7 +58,7 @@ const isRail = ref(true)
           @click="router.push({ name: 'Home' })"
         ></v-list-item>
         <v-list-item
-          prepend-icon="mdi-cash"
+          prepend-icon="mdi-wallet-outline"
           title="Lançamentos"
           value="shared"
           @click="router.push({ name: 'Transactions' })"
@@ -44,11 +70,24 @@ const isRail = ref(true)
           @click="router.push({ name: 'Boxes' })"
         ></v-list-item>
       </v-list>
-      <v-list-item
-        prepend-icon="mdi-exit-to-app"
-        title="Logout"
-        @click="router.push({ name: 'Login' })"
-      ></v-list-item>
+      <template v-slot:append>
+        <v-row class="pa-2 justify-space-between align-center">
+          <v-col cols="auto">
+            <v-btn
+              class="pa-2"
+              variant="text"
+              :icon="theme.global.current.value.dark ? 'mdi-weather-sunny' : 'mdi-weather-night'"
+              @click="toggleTheme"
+            >
+            </v-btn>
+          </v-col>
+          <v-slide-x-transition v-if="!isRail">
+            <v-col cols="auto">
+              <v-btn class="pa-2" variant="text" @click="logout" icon="mdi-exit-to-app"> </v-btn>
+            </v-col>
+          </v-slide-x-transition>
+        </v-row>
+      </template>
     </v-navigation-drawer>
     <v-main>
       <div class="pa-8">
@@ -57,3 +96,9 @@ const isRail = ref(true)
     </v-main>
   </v-layout>
 </template>
+<style scoped>
+a {
+  color: #9b51e0;
+  text-decoration: none;
+}
+</style>

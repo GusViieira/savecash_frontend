@@ -1,13 +1,15 @@
 <script setup lang="ts" name="LoginView">
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import type { LoginRequestModel } from '@/models/request/LoginRequestModel'
 import LoginService from '@/services/LoginService'
 import { useRouter } from 'vue-router'
 import LoadingComponent from '@/components/LoadingComponent.vue'
 import UserRegisterView from './UserRegisterView.vue'
 import { userStore } from '@/stores/userStore'
+import { useTheme } from 'vuetify'
 
 const router = useRouter()
+const theme = useTheme()
 
 const alertError = ref(false)
 const form = ref()
@@ -56,6 +58,7 @@ const submit = async () => {
     console.error(e)
   }
 }
+onMounted(() => (theme.global.name.value = 'dark'))
 </script>
 
 <template>
