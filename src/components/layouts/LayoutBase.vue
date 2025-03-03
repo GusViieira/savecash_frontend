@@ -38,7 +38,7 @@ onMounted(() => applyThemeToBody(savedTheme))
 </script>
 <template>
   <v-layout>
-    <v-navigation-drawer v-model:rail="isRail" permanent expand-on-hover>
+    <v-navigation-drawer v-model:rail="isRail" permanent expand-on-hover theme="dark">
       <v-list>
         <v-avatar
           :size="isRail ? 40 : 200"
@@ -46,7 +46,14 @@ onMounted(() => applyThemeToBody(savedTheme))
         >
           <v-img :src="avatarSrc" alt="Login" class="img-fluid" />
         </v-avatar>
-        <v-list-item class="text-center" :subtitle="store.email" :title="store.name"></v-list-item>
+        <v-slide-x-transition v-if="!isRail">
+          <v-list-item
+            v-if="!isRail"
+            class="text-center"
+            :subtitle="store.email"
+            :title="store.name"
+          ></v-list-item>
+        </v-slide-x-transition>
       </v-list>
 
       <v-divider></v-divider>
@@ -54,20 +61,26 @@ onMounted(() => applyThemeToBody(savedTheme))
         <v-list-item
           prepend-icon="mdi-view-dashboard-outline"
           title="Dashboard"
-          value="myfiles"
+          value="dash"
           @click="router.push({ name: 'Home' })"
         ></v-list-item>
         <v-list-item
           prepend-icon="mdi-wallet-outline"
           title="Lançamentos"
-          value="shared"
+          value="transactions"
           @click="router.push({ name: 'Transactions' })"
         ></v-list-item>
         <v-list-item
           prepend-icon="mdi-cube-outline"
           title="Caixinhas"
-          value="starred"
+          value="boxes"
           @click="router.push({ name: 'Boxes' })"
+        ></v-list-item>
+        <v-list-item
+          prepend-icon="mdi-bullseye-arrow"
+          title="Metas financeiras"
+          value="goals"
+          @click="router.push({ name: 'Goals' })"
         ></v-list-item>
       </v-list>
       <template v-slot:append>
@@ -83,6 +96,12 @@ onMounted(() => applyThemeToBody(savedTheme))
           </v-col>
           <v-slide-x-transition v-if="!isRail">
             <v-col cols="auto">
+              <v-btn
+                class="pa-2"
+                variant="text"
+                @click="router.push({ name: 'Settings' })"
+                icon="mdi-cog-outline"
+              />
               <v-btn class="pa-2" variant="text" @click="logout" icon="mdi-exit-to-app"> </v-btn>
             </v-col>
           </v-slide-x-transition>
