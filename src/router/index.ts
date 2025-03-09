@@ -3,6 +3,7 @@ import HomeView from '@/views/HomeView.vue'
 import LoginView from '@/views/LoginView.vue'
 import LayoutBase from '@/components/layouts/LayoutBase.vue'
 import TransactionsView from '@/views/transactions/TransactionsView.vue'
+import ResetPassView from '@/views/ResetPassView.vue'
 import BoxesView from '@/views/boxes/BoxesView.vue'
 import SettingsView from '@/views/config/SettingView.vue'
 import GoalsView from '@/views/goals/GoalsView.vue'
@@ -17,6 +18,11 @@ const routes = [
     path: '/login',
     name: 'Login',
     component: LoginView,
+  },
+  {
+    path: '/reset-password',
+    name: 'ResetPassword',
+    component: ResetPassView,
   },
   {
     path: '/',
