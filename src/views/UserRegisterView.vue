@@ -39,8 +39,8 @@ const validation = async () => {
 const submit = async () => {
   try {
     loading.value = true
-    const userServices = new UserServices()
-    const response = await userServices.register(state.value.registerUser)
+    const userServices = new UserServices.RegisterUserService()
+    const response = await userServices.registerUser(state.value.registerUser)
     if (response.data.errors?.length) {
       response.data.errors.forEach((error) => {
         warning.value = error.message

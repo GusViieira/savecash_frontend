@@ -1,10 +1,6 @@
 import { AxiosError, type AxiosResponse } from 'axios'
 import api from '@/utils/request'
-
-interface ApiResponse<T> {
-  content?: T | null
-  errors?: { message: string }[] | null
-}
+import type { ApiResponse } from '@/models/ApiResponse'
 
 async function request<T>(
   method: string,
