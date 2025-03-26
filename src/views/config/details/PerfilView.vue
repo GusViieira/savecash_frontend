@@ -29,10 +29,9 @@ const search = async () => {
     const service = new UserServices.GetUserService()
     const response = await service.getUser(store.idUser)
     state.user = response.data.content
-    state.user.birthDate = convertDate(state.user.birthDate)
+    state.user.birthDate = convertDate(state.user.birthDate) as ''
     state.userBckup = structuredClone(response.data.content)
-    state.userBckup.birthDate = state.userBckup.birthDate.split('-').reverse().join('-')
-    console.log('userBckp', state.userBckup)
+    state.userBckup.birthDate = state.userBckup.birthDate?.split('-').reverse().join('-')
     loading.value = false
     rendered.value = true
   } catch (error) {
@@ -52,8 +51,8 @@ const submit = async () => {
     saving.value = true
     const service = new UserServices.UpdateUserService()
     const response = await service.updateUser(state.user)
-    state.user = response.data.content as UserResponseModel
-    store.name = response.data.content.name
+    state.user = response.data.content
+    updateStorage(response.data.content)
     state.user.birthDate = convertDate(state.user.birthDate)
     state.userBckup = structuredClone(response.data.content)
     state.userBckup.birthDate = state.userBckup.birthDate.split('-').reverse().join('-')
@@ -62,6 +61,11 @@ const submit = async () => {
   } catch (error) {
     console.error(error)
   }
+}
+
+const updateStorage = (user: UserResponseModel) => {
+  store.name = user.name
+  store.email = user.email
 }
 
 onMounted(() => {
