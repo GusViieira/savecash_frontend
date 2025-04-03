@@ -4,10 +4,11 @@ import { defineStore } from 'pinia'
 export const userStore = defineStore(
   'user',
   () => {
+    const idUser = ref()
     const name = ref('')
     const email = ref('')
 
-    return { name, email }
+    return { idUser, name, email }
   },
   {
     persist: {

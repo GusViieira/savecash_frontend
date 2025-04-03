@@ -16,11 +16,13 @@
   "dependencies": {
     "@mdi/font": "7.4.47",
     "axios": "^1.8.1",
+    "maska": "^3.1.0",
     "pinia": "^3.0.1",
     "pinia-plugin-persistedstate": "^4.2.0",
     "vite-plugin-vuetify": "^2.1.0",
     "vue": "^3.5.13",
     "vue-router": "^4.5.0",
+    "vue-the-mask": "^0.11.1",
     "vuetify": "^3.7.0-beta.1"
   },
   "devDependencies": {
@@ -28,6 +30,7 @@
     "@types/axios": "^0.9.36",
     "@types/jsdom": "^21.1.7",
     "@types/node": "^22.13.4",
+    "@types/vue-the-mask": "^0.11.0",
     "@vitejs/plugin-vue": "^5.2.1",
     "@vitejs/plugin-vue-jsx": "^4.1.1",
     "@vitest/eslint-plugin": "1.1.31",
@@ -41,6 +44,7 @@
     "jsdom": "^26.0.0",
     "npm-run-all2": "^7.0.2",
     "prettier": "^3.5.1",
+    "sass-embedded": "^1.85.1",
     "typescript": "~5.7.3",
     "vite": "^6.2.0",
     "vite-plugin-vue-devtools": "^7.7.2",
