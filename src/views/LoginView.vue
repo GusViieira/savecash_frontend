@@ -7,7 +7,6 @@ import LoadingComponent from '@/components/LoadingComponent.vue'
 import UserRegisterView from './UserRegisterView.vue'
 import { userStore } from '@/stores/userStore'
 import { useTheme } from 'vuetify'
-import type ResetPassView from './ResetPassView.vue'
 
 const router = useRouter()
 const theme = useTheme()
@@ -110,7 +109,9 @@ onMounted(() => (theme.global.name.value = 'dark'))
                 />
                 <v-row>
                   <v-col class="text-right mb-1">
-                    <a @click="router.push({name:'ResetPassword'})" style="cursor: pointer">Esqueci a senha</a>
+                    <a @click="router.push({ name: 'ResetPassword' })" style="cursor: pointer"
+                      >Esqueci a senha</a
+                    >
                   </v-col>
                 </v-row>
               </v-col>
