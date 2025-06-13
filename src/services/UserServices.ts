@@ -2,6 +2,7 @@ import type { ApiResponse } from '@/models/ApiResponse'
 import request from './index'
 import type { AxiosResponse } from 'axios'
 import type { UserResponseModel } from '@/models/response/UserResponseModel'
+import type { ResetPassModel } from '@/models/request/ResetPassRequestModel'
 
 const path = '/user'
 
@@ -25,4 +26,20 @@ class UpdateUserService {
   }
 }
 
-export default { RegisterUserService, GetUserService, UpdateUserService }
+class RecoverPasswordService {
+  async recoverPassword(email: string): Promise<AxiosResponse<ApiResponse<string>>> {
+    return await request<string>('POST', path + '/recoverPassword' + `?email=${email}`)
+  }
+
+  async verfyRecoverCode(otp: number, email: string): Promise<AxiosResponse<ApiResponse<number>>> {
+    return await request<number>('GET', path + '/verify-otp' + `?otp=${otp}&email=${email}`)
+  }
+
+  async changePassword(
+    resetPassModel: ResetPassModel,
+  ): Promise<AxiosResponse<ApiResponse<string>>> {
+    return await request<string>('POST', path + '/changePassword', resetPassModel)
+  }
+}
+
+export default { RegisterUserService, GetUserService, UpdateUserService, RecoverPasswordService }
