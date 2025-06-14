@@ -3,10 +3,12 @@ import type { ResetPassModel, ResetPassRequestModel } from '@/models/request/Res
 import UserServices from '@/services/UserServices'
 import { ERROR, SUCCESS } from '@/utils/constants'
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 
 const show1 = ref(false)
 const show2 = ref(false)
 const alertError = ref(false)
+const router = useRouter()
 
 interface State {
   newPassword: ResetPassRequestModel
@@ -114,6 +116,7 @@ const submitNewPassword = async (resetPassModel: ResetPassModel) => {
     alertError.value = true
     color.value = SUCCESS
     state.value.error = response.data.content
+    router.push({ name: 'Login' })
     return true
   } catch (error) {
     console.error('Error resetting password:', error)
@@ -180,22 +183,6 @@ const submitNewPassword = async (resetPassModel: ResetPassModel) => {
                   variant="outlined"
                 ></v-otp-input>
               </v-sheet>
-              <!--v-row>
-                <v-col cols="12" sm="12" md="8" lg="6" class="mx-auto">
-                  <v-text-field
-                    v-model="state.newPassword.code"
-                    label="Código de verificação"
-                    variant="solo-filled"
-                    density="compact"
-                    type="number"
-                    theme="dark"
-                    required
-                    :rules="[
-                      () => !!state.newPassword.code || 'Código de verificação é obrigatório',
-                    ]"
-                  ></v-text-field>
-                </v-col>
-              </v-row-->
             </v-form>
           </div>
           <div v-else-if="step === 3" class="px-16 text-center">
@@ -226,7 +213,7 @@ const submitNewPassword = async (resetPassModel: ResetPassModel) => {
                     density="compact"
                     theme="dark"
                     required
-                    :rules="[(v) => v.length >= 8 || 'Senha deve ter no mínimo 8 caracteres']"
+                    :rules="[(v) => v === state.newPassword.password || 'As senhas não coincidem']"
                     :append-inner-icon="show2 ? 'mdi-eye-off' : 'mdi-eye'"
                     @click:append-inner="show2 = !show2"
                     :type="show2 ? 'text' : 'password'"

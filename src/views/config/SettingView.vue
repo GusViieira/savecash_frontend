@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import PerfilView from './details/PerfilView.vue'
+import PasswordView from './details/PasswordView.vue'
 </script>
 
 <template>
@@ -13,8 +14,10 @@ import PerfilView from './details/PerfilView.vue'
   </v-expansion-panels>
 
   <v-expansion-panels>
-    <v-expansion-panel title="Senha" class="mb-2">
-      <v-expansion-panel-text> </v-expansion-panel-text>
+    <v-expansion-panel title="Alterar senha" class="mb-2">
+      <v-expansion-panel-text>
+        <PasswordView />
+      </v-expansion-panel-text>
     </v-expansion-panel>
   </v-expansion-panels>
 </template>

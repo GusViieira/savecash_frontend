@@ -29,9 +29,11 @@ const search = async () => {
     const service = new UserServices.GetUserService()
     const response = await service.getUser(store.idUser)
     state.user = response.data.content
-    state.user.birthDate = convertDate(state.user.birthDate) as ''
+    if(state.user.birthDate){
+      state.user.birthDate = convertDate(state.user.birthDate) as ''
+      state.userBckup.birthDate = state.userBckup.birthDate?.split('-').reverse().join('-')
+    }
     state.userBckup = structuredClone(response.data.content)
-    state.userBckup.birthDate = state.userBckup.birthDate?.split('-').reverse().join('-')
     loading.value = false
     rendered.value = true
   } catch (error) {
@@ -41,7 +43,7 @@ const search = async () => {
 
 const validateSubmit = () => {
   state.user.birthDate = convertDateToServe(state.user.birthDate)
-  if (JSON.stringify(state.user) !== JSON.stringify(state.userBckup)) {
+  if(JSON.stringify(state.user) !== JSON.stringify(state.userBckup)) {
     submit()
   }
 }
@@ -53,9 +55,11 @@ const submit = async () => {
     const response = await service.updateUser(state.user)
     state.user = response.data.content
     updateStorage(response.data.content)
-    state.user.birthDate = convertDate(state.user.birthDate)
+    if(state.user.birthDate){
+      state.user.birthDate = convertDate(state.user.birthDate) as ''
+      state.userBckup.birthDate = state.userBckup.birthDate?.split('-').reverse().join('-')
+    }
     state.userBckup = structuredClone(response.data.content)
-    state.userBckup.birthDate = state.userBckup.birthDate.split('-').reverse().join('-')
     saving.value = false
     alertSucess.value = true
   } catch (error) {
