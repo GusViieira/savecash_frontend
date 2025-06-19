@@ -1,9 +1,8 @@
 <script setup lang="ts" name="LoginView">
 import { ref } from 'vue'
-import TransactionModalView from './TransactionModalView.vue'
+import TransactionModalView from './details/TransactionModalView.vue'
 
 const dialog = ref(false)
-
 </script>
 
 <template>
@@ -12,7 +11,9 @@ const dialog = ref(false)
     <v-card-title class="bg-lightGrey pt-6 px-5">
       <v-row>
         <v-col>
-          <v-btn class="button" color="primary" rounded="xl" @click="dialog = true"> Registrar <v-icon>mdi-plus</v-icon> </v-btn>
+          <v-btn class="button" color="primary" rounded="xl" @click="dialog = true">
+            Registrar <v-icon>mdi-plus</v-icon>
+          </v-btn>
         </v-col>
         <v-col cols="12" sm="12" md="6" lg="3">
           <v-text-field
