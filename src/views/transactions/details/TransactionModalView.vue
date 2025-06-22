@@ -12,10 +12,10 @@ const emit = defineEmits<{
 </script>
 <template>
   <LoadingComponent />
-  <div class="pa-15">
     <ModalPersonalized
       title="Novo Lançamento"
       icon="mdi-bank-transfer"
+      width="650"
       @close="(v) => emit('close', v)"
     >
       <template #default>
@@ -63,12 +63,21 @@ const emit = defineEmits<{
               class="mr-2"
             />
           </v-col>
-          <v-col cols="12" xl="8" lg="8" md="8" sm="12">
+          <v-col cols="12" xl="4" lg="4" md="4" sm="12">
             <v-select
               label="Categoria"
               variant="solo-filled"
               density="compact"
               :items="['Salário', 'Investimento', 'Outros']"
+              class="mr-2"
+            />
+          </v-col>
+          <v-col cols="12" xl="4" lg="4" md="4" sm="12">
+            <v-select
+              label="Status"
+              variant="solo-filled"
+              density="compact"
+              :items="['Pago', 'Não pago', 'Outro']"
             />
           </v-col>
         </v-row>
@@ -87,19 +96,18 @@ const emit = defineEmits<{
       </template>
       <template #actions>
         <v-row no-gutters align="center" class="mt-n8">
-          <v-col cols="12" xl="2" lg="2" md="2" sm="12">
+          <v-col cols="12" xl="1" lg="1" md="1" sm="12">
             <v-switch hide-details inset color="primary" />
           </v-col>
-          <v-col cols="12" xl="4" lg="4" md="4" sm="12">
+          <v-col class="pa-3" cols="12" xl="2" lg="2" md="2" sm="12">
             <span>Recorrente</span>
           </v-col>
-          <v-col cols="12" xl="6" lg="6" md="6" sm="12" class="text-right">
+          <v-col cols="12" xl="9" lg="9" md="9" sm="12" class="text-end pa-0">
             <v-btn class="bg-primary" color="purple" variant="text" rounded text="Salvar" />
           </v-col>
         </v-row>
       </template>
     </ModalPersonalized>
-  </div>
 </template>
 <style scoped>
 .button-revenue {

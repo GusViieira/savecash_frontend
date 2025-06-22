@@ -2,6 +2,7 @@
 const props = defineProps<{
   icon: string
   title: string
+  width: string
 }>()
 
 const emit = defineEmits<{
@@ -10,7 +11,7 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <v-card class="mx-auto" color="secondary" max-width="850" min-height="300" variant="flat">
+  <v-card class="mx-auto" color="secondary" max-width="1000" :width="props.width" min-height="300" variant="flat">
     <v-sheet color="third">
       <v-card-item>
         <template v-slot:prepend>
