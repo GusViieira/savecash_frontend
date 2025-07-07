@@ -1,12 +1,13 @@
 <script setup lang="ts" name="LoginView">
 import { ref } from 'vue'
 import TransactionModalView from './details/TransactionModalView.vue'
+import TransactionTableView from './details/TransactionTableView.vue';
 
 const dialog = ref(false)
 </script>
 
 <template>
-  <h1>Lançamentos</h1>
+  <h1>Lançamentos 🚀</h1>
   <v-card>
     <v-card-title class="bg-lightGrey pt-6 px-5">
       <v-row>
@@ -26,7 +27,7 @@ const dialog = ref(false)
       </v-row>
     </v-card-title>
     <v-card-text class="pa-5">
-      <h1>Teste</h1>
+      <TransactionTableView/>
     </v-card-text>
   </v-card>
   <v-dialog v-model="dialog" max-width="600">
