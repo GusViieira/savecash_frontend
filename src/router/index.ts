@@ -7,6 +7,7 @@ import ResetPassView from '@/views/ResetPassView.vue'
 import BoxesView from '@/views/boxes/BoxesView.vue'
 import SettingsView from '@/views/config/SettingView.vue'
 import GoalsView from '@/views/goals/GoalsView.vue'
+import WalletsView from '@/views/wallets/WalletsView.vue'
 
 function isAuthenticated() {
   const token = localStorage.getItem('token')
@@ -56,6 +57,12 @@ const routes = [
         path: 'settings',
         name: 'Settings',
         component: SettingsView,
+        meta: { requiresAuth: true },
+      },
+      {
+        path: 'wallets',
+        name: 'Wallets',
+        component: WalletsView,
         meta: { requiresAuth: true },
       },
     ],

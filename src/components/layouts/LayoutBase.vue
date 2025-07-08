@@ -82,6 +82,12 @@ onMounted(() => applyThemeToBody(savedTheme))
           value="goals"
           @click="router.push({ name: 'Goals' })"
         ></v-list-item>
+        <v-list-item
+          prepend-icon="mdi-account-group-outline"
+          title="Gerenciar carteiras"
+          value="account-group"
+          @click="router.push({ name: 'Wallets' })"
+        ></v-list-item>
       </v-list>
       <template v-slot:append>
         <v-row class="pa-2 justify-space-between align-center">

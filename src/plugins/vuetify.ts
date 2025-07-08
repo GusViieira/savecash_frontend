@@ -27,6 +27,7 @@ export default createVuetify({
           deepGreen: '#005725',
           lightRed: '#EB5757',
           deepRed: '#961F1F',
+          darkGrey: '#212121'
         },
       },
     },
