@@ -27,7 +27,7 @@ const dialog = ref(false)
       </v-row>
     </v-card-title>
     <v-card-text class="pa-5">
-      <TransactionTableView/>
+      <TransactionTableView :update-view="!dialog"/>
     </v-card-text>
   </v-card>
   <v-dialog v-model="dialog" max-width="600">

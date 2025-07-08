@@ -2,23 +2,52 @@
 import BalancesCards from '@/components/BalancesCards.vue'
 import DataTable from '@/components/DataTable.vue'
 import LoadingComponent from '@/components/LoadingComponent.vue'
-import type { TransactionResponseModel } from '@/models/response/TransactionResponseModel'
+import type { Pagination } from '@/models/Pagination'
+import type { UpdateTransactionRequestModel } from '@/models/request/UpdateTransactionRequestModel'
+import type {
+  TransactionDTO,
+  TransactionResponseModel,
+} from '@/models/response/TransactionResponseModel'
 import TransactionsService from '@/services/TransactionsService'
 import { userStore } from '@/stores/userStore'
-import { onMounted, reactive, ref } from 'vue'
+import { onMounted, reactive, ref, watch } from 'vue'
+import { PAID, PENDING } from '@/utils/constants'
+import TransactionModalView from './TransactionModalView.vue'
 
 const aba = ref()
 
 const store = userStore()
 const monted = ref(false)
 const loading = ref(false)
+const dialog = ref(false)
+
+const props = defineProps<{
+  updateView?: boolean
+}>()
+
+watch(
+  () => props.updateView,
+  (newValue) => {
+    if (newValue) {
+      search(state.pagination)
+    }
+  },
+)
 
 interface state {
   items: TransactionResponseModel
+  item: TransactionDTO
+  pagination: Pagination
 }
 
 const state = reactive<state>({
   items: {} as TransactionResponseModel,
+  item: {} as TransactionDTO,
+  pagination: {
+    page: 0,
+    size: 10,
+    totalPage: 0,
+  } as Pagination,
 })
 
 const tabs = ref([
@@ -41,21 +70,27 @@ const headers = [
     key: 'type',
     sortable: false,
     title: 'Tipo',
+    align: 'center',
   },
   { key: 'description', title: 'Descrição', sortable: false },
-  { key: 'category', title: 'Categoria', sortable: false },
-  { key: 'date', title: 'Data de vencimento' },
-  { key: 'value', title: 'Valor' },
-  { key: 'note', title: 'Anotação', sortable: false },
-  { key: 'status', title: 'Status' },
-  { key: 'actions', title: 'Ações', sortable: false },
+  { key: 'categoryDescription', title: 'Categoria', sortable: false },
+  { key: 'date', title: 'Data de vencimento', align: 'center', sortable: false },
+  { key: 'value', title: 'Valor', sortable: false, align: 'center' },
+  { key: 'note', title: 'Anotação', sortable: false, align: 'center' },
+  { key: 'status', title: 'Status', sortable: false, align: 'center' },
+  { key: 'actions', title: 'Ações', sortable: false, align: 'center' },
 ]
 
-const search = async () => {
+const search = async (pagination: Pagination) => {
   try {
     loading.value = true
     const service = new TransactionsService.Transactions()
-    const response = await service.getTransaction(store.idUser, aba.value)
+    const response = await service.getTransaction(
+      store.idUser,
+      aba.value,
+      pagination.page,
+      pagination.size,
+    )
     if (response.data.content) {
       state.items = response.data.content
     }
@@ -66,17 +101,66 @@ const search = async () => {
   }
 }
 
+const submit = async (item: TransactionDTO) => {
+  try {
+    const update = handleUpdateTransaction(item)
+    const service = new TransactionsService.Transactions()
+    await service.updateTransaction(update)
+    search(state.pagination)
+  } catch (error) {
+    console.error('Error updating transaction status:', error)
+  } finally {
+    loading.value = false
+  }
+}
+
+const handleUpdateTransaction = (item: TransactionDTO): UpdateTransactionRequestModel => {
+  return {
+    id: item.id,
+    type: item.type,
+    description: item.description,
+    idCategory: item.idCategory,
+    categoryDescription: item.categoryDescription,
+    date: item.date,
+    value: item.value,
+    note: item.note,
+    status: item.status === PENDING ? PAID : PENDING,
+    idUser: item.idUser,
+    isRecurrent: item.isRecurrent,
+  }
+}
+
+const update = (item: TransactionDTO) => {
+  state.item = item
+  dialog.value = true
+}
+
+const deleteTransaction = async (item: TransactionDTO) => {
+  try {
+    const service = new TransactionsService.Transactions()
+    await service.deleteTransaction(item.id)
+    search(state.pagination)
+  } catch (error) {
+    console.error('Error deleting transaction:', error)
+  }
+}
+
 onMounted(() => {
   const today = new Date()
   const atualMonth = today.getMonth() + 1
   aba.value = atualMonth
-  search()
+  search(state.pagination)
 })
 </script>
 <template>
   <LoadingComponent :value="loading" />
   <v-tabs v-model="aba" color="primary">
-    <v-tab v-for="tab in tabs" :key="tab.value" :value="tab.value" @click="search">
+    <v-tab
+      v-for="tab in tabs"
+      :key="tab.value"
+      :value="tab.value"
+      @click="search(state.pagination)"
+    >
       {{ tab.text }}
     </v-tab>
   </v-tabs>
@@ -97,12 +181,35 @@ onMounted(() => {
         </v-row>
         <v-row>
           <v-col>
-            <DataTable :headers="headers" :items="state.items.transactionDTO">
+            <DataTable
+              :headers="headers"
+              :items="state.items.transactionDTO"
+              :totalPage="state.items.totalPage"
+              :size="state.pagination.size"
+              :page="state.pagination.page"
+              @update:page="
+                (v: number) => {
+                  state.pagination.page = v
+                  search(state.pagination)
+                }
+              "
+              @edit="(item) => update(item as TransactionDTO)"
+              @delete="(item) => deleteTransaction(item as TransactionDTO)"
+            >
               <template v-slot:item.type="{ item }">
-                {{ parseInt(item.type) === 1 ? 'Receita' : 'Despesa' }}
+                <v-row>
+                  <v-col color="primary" class="align-left">
+                    <v-icon :color="parseInt(item.type) === 1 ? 'green' : 'red'">{{
+                      parseInt(item.type) === 1 ? 'mdi-arrow-up' : 'mdi-arrow-down'
+                    }}</v-icon>
+                    {{ parseInt(item.type) === 1 ? 'Receita' : 'Despesa' }}</v-col
+                  >
+                </v-row>
               </template>
               <template v-slot:item.date="{ item }">
-                {{ new Date(item.date).toLocaleDateString('pt-BR') }}
+                <div class="text-center">
+                  {{ new Date(item.date).toLocaleDateString('pt-BR') }}
+                </div>
               </template>
               <template v-slot:item.value="{ item }">
                 {{ item.value?.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) }}
@@ -110,10 +217,34 @@ onMounted(() => {
               <template v-slot:item.note="{ item }">
                 {{ item.note || '-' }}
               </template>
+              <template v-slot:item.status="{ item }">
+                <div class="text-center">
+                  <v-chip
+                    :color="item.status === PAID ? 'green' : item.status === PENDING ? 'red' : ''"
+                    :text="item.status"
+                    class="text-uppercase"
+                    size="small"
+                    label
+                    @click="submit(item)"
+                  ></v-chip>
+                </div>
+              </template>
             </DataTable>
           </v-col>
         </v-row>
       </v-tabs-window-item>
     </v-tabs-window>
   </v-card-text>
+  <v-dialog v-model="dialog" max-width="600">
+    <TransactionModalView
+      :isUpdate="true"
+      :item="state.item"
+      @close="
+        (v: boolean) => {
+          dialog = v
+          search(state.pagination)
+        }
+      "
+    />
+  </v-dialog>
 </template>
