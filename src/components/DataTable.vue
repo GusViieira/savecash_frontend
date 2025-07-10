@@ -77,7 +77,6 @@ watch(
 <style>
 .v-table {
   border-radius: 10px !important;
-  overflow: hidden !important;
 }
 .v-data-table thead {
   color: #fff !important;
@@ -90,5 +89,8 @@ watch(
   --v-table-header-height: 40px !important;
   --v-table-header-border-radius: 10px !important;
   --v-table-row-height: 40px !important;
+}
+.v-table__wrapper {
+  overflow: hidden !important;
 }
 </style>
