@@ -153,6 +153,8 @@ onMounted(() => {
             density="compact"
             type="text"
             class="mr-2"
+            prefix="R$"
+            :rules="[(v) => !!v || 'Valor é obrigatório']"
           />
         </v-col>
         <v-col cols="12" xl="8" lg="8" md="8" sm="12">
