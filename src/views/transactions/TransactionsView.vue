@@ -1,7 +1,7 @@
 <script setup lang="ts" name="LoginView">
 import { ref } from 'vue'
 import TransactionModalView from './details/TransactionModalView.vue'
-import TransactionTableView from './details/TransactionTableView.vue';
+import TransactionTableView from './details/TransactionTableView.vue'
 
 const dialog = ref(false)
 </script>
@@ -9,25 +9,22 @@ const dialog = ref(false)
 <template>
   <h1>Lançamentos 🚀</h1>
   <v-card>
-    <v-card-title class="bg-lightGrey pt-6 px-5">
+    <v-card-title class="bg-lightGrey pa-5">
       <v-row>
         <v-col>
           <v-btn class="button" color="primary" rounded="xl" @click="dialog = true">
             Registrar <v-icon>mdi-plus</v-icon>
           </v-btn>
         </v-col>
-        <v-col cols="12" sm="12" md="6" lg="3">
-          <v-text-field
-            variant="outlined"
-            density="compact"
-            label="Filtro"
-            append-inner-icon="mdi-magnify"
-          ></v-text-field>
+        <v-col cols="12" sm="12" md="6" lg="3" class="text-right">
+          <v-btn class="button" color="primary" icon size="small">
+            <v-icon class="pa-5">mdi-filter-variant</v-icon>
+          </v-btn>
         </v-col>
       </v-row>
     </v-card-title>
     <v-card-text class="pa-5">
-      <TransactionTableView/>
+      <TransactionTableView :update-view="!dialog" />
     </v-card-text>
   </v-card>
   <v-dialog v-model="dialog" max-width="600">

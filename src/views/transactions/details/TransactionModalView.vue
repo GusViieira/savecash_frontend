@@ -2,28 +2,37 @@
 import LoadingComponent from '@/components/LoadingComponent.vue'
 import ModalPersonalized from '@/components/ModalPersonalized.vue'
 import type { CreateTransactionRequestModel } from '@/models/request/CreateTransactionRequestModel'
+import type { UpdateTransactionRequestModel } from '@/models/request/UpdateTransactionRequestModel'
 import type { CategoryResponseModel } from '@/models/response/CategoryResponseModel'
 import CategoryService from '@/services/CategoryService'
 import TransactionsService from '@/services/TransactionsService'
 import { userStore } from '@/stores/userStore'
-import { convertDateToServe } from '@/utils/date'
+import { convertDate, convertDateToServe } from '@/utils/date'
 import { onMounted, reactive, ref } from 'vue'
 
 const isRevenue = ref(true)
 const isExpense = ref(false)
 const loading = ref(false)
 const alertSucess = ref(false)
+const title = ref('Novo Lançamento')
 
 const store = userStore()
+
+const props = defineProps<{
+  isUpdate?: boolean
+  item?: UpdateTransactionRequestModel
+}>()
 
 interface state {
   itemsCategory: CategoryResponseModel[]
   createTransaction: CreateTransactionRequestModel
+  updateTransaction: UpdateTransactionRequestModel
 }
 
 const state = reactive<state>({
   itemsCategory: [],
   createTransaction: {} as CreateTransactionRequestModel,
+  updateTransaction: {} as UpdateTransactionRequestModel,
 })
 
 const emit = defineEmits<{
@@ -40,11 +49,6 @@ const searchCategories = async () => {
   }
 }
 
-onMounted(() => {
-  state.createTransaction.type = 1 // Default to revenue
-  searchCategories()
-})
-
 const submit = async () => {
   try {
     loading.value = true
@@ -57,11 +61,50 @@ const submit = async () => {
     }
     loading.value = false
 
-    emit('close', true)
+    emit('close', false)
   } catch (error) {
     console.error('Error creating transaction:', error)
   }
 }
+
+const submitUpdate = async () => {
+  try {
+    loading.value = true
+    const service = new TransactionsService.Transactions()
+    fillUpdateTransaction()
+    const response = await service.updateTransaction(state.updateTransaction)
+    if (response.data.content) {
+      alertSucess.value = true
+    }
+    loading.value = false
+    emit('close', false)
+  } catch (error) {
+    console.error('Error updating transaction:', error)
+  }
+}
+
+const fillUpdateTransaction = () => {
+  state.updateTransaction = {
+    ...state.createTransaction,
+    date: convertDateToServe(state.createTransaction.date),
+  } as UpdateTransactionRequestModel
+}
+
+onMounted(() => {
+  searchCategories()
+  if (props.isUpdate) {
+  console.log('Editing transaction:', props.item)
+  state.createTransaction = {
+    ...props.item,
+    ...(props.item?.date && { date: convertDate(props.item.date) }),
+  } as CreateTransactionRequestModel
+  title.value = 'Editar Lançamento'
+
+  return
+}
+  state.createTransaction.type = 1 // Default to revenue
+})
+
 </script>
 <template>
   <LoadingComponent :value="loading"/>
@@ -76,7 +119,7 @@ const submit = async () => {
     {{ 'Suas alterações foram salvas com sucesso.' }}
   </v-snackbar>
   <ModalPersonalized
-    title="Novo Lançamento"
+    :title="title"
     icon="mdi-bank-transfer"
     width="650"
     @close="(v) => emit('close', v)"
@@ -86,17 +129,17 @@ const submit = async () => {
         <v-col cols="12" sm="6">
           <v-btn
             class="mr-1"
-            :class="isRevenue ? 'button-revenue' : ''"
-            :color="isRevenue ? 'lightGreen' : ''"
+            :class="state.createTransaction.type === 1 ? 'button-revenue' : ''"
+            :color="state.createTransaction.type === 1 ? 'lightGreen' : ''"
             text="Receita"
             variant="flat"
             @click="((isRevenue = true), (isExpense = false)), state.createTransaction.type = 1"
           />
           <v-btn
-            :class="isExpense ? 'button-expense' : ''"
+            :class="state.createTransaction.type === 2 ? 'button-expense' : ''"
             text="Despesa"
             variant="flat"
-            :color="isExpense ? 'lightRed' : ''"
+            :color="state.createTransaction.type === 2 ? 'lightRed' : ''"
             @click="((isExpense = true), (isRevenue = false)), state.createTransaction.type = 2"
           />
         </v-col>
@@ -110,6 +153,8 @@ const submit = async () => {
             density="compact"
             type="text"
             class="mr-2"
+            prefix="R$"
+            :rules="[(v) => !!v || 'Valor é obrigatório']"
           />
         </v-col>
         <v-col cols="12" xl="8" lg="8" md="8" sm="12">
@@ -178,10 +223,13 @@ const submit = async () => {
           <span>Recorrente</span>
         </v-col>
         <v-col cols="12" xl="9" lg="9" md="9" sm="12" class="text-end pa-0">
-          <v-btn class="bg-primary" color="purple" variant="text" rounded text="Salvar" @click="submit"/>
+          <v-btn v-if="props.isUpdate" class="bg-primary" color="purple" variant="text" rounded text="Salvar" @click="submitUpdate"/>
+          <v-btn v-if="!props.isUpdate" class="bg-primary" color="purple" variant="text" rounded text="Salvar" @click="submit"/>
         </v-col>
       </v-row>
+
     </template>
+
   </ModalPersonalized>
 </template>
 <style scoped>
