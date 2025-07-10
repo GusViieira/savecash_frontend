@@ -22,4 +22,5 @@ export interface TransactionDTO {
   note: string
   idUser: number
   isRecurrent: string
+  loading?: boolean
 }

@@ -42,7 +42,7 @@ interface state {
 
 const state = reactive<state>({
   items: {} as TransactionResponseModel,
-  item: {} as TransactionDTO,
+  item: { loading: false } as TransactionDTO,
   pagination: {
     page: 0,
     size: 10,
@@ -68,16 +68,16 @@ const tabs = ref([
 const headers = [
   {
     key: 'type',
-    sortable: false,
+    sortable: true,
     title: 'Tipo',
     align: 'center',
   },
-  { key: 'description', title: 'Descrição', sortable: false },
-  { key: 'categoryDescription', title: 'Categoria', sortable: false },
-  { key: 'date', title: 'Data de vencimento', align: 'center', sortable: false },
-  { key: 'value', title: 'Valor', sortable: false, align: 'center' },
-  { key: 'note', title: 'Anotação', sortable: false, align: 'center' },
-  { key: 'status', title: 'Status', sortable: false, align: 'center' },
+  { key: 'date', title: 'Data de vencimento', align: 'center', sortable: true },
+  { key: 'description', title: 'Descrição', align: 'right', sortable: false },
+  { key: 'categoryDescription', title: 'Categoria', align: 'right', sortable: false },
+  { key: 'note', title: 'Anotação', sortable: false, align: 'right' },
+  { key: 'value', title: 'Valor', sortable: true, align: 'center' },
+  { key: 'status', title: 'Status', sortable: true, align: 'center' },
   { key: 'actions', title: 'Ações', sortable: false, align: 'center' },
 ]
 
@@ -97,18 +97,28 @@ const search = async (pagination: Pagination) => {
     monted.value = true
     loading.value = false
   } catch (error) {
-    console.error('Error fetching transactions:', error)
+    console.error(error)
   }
 }
 
-const submit = async (item: TransactionDTO) => {
+const submit = async (item: TransactionDTO, isChip: boolean) => {
   try {
+    if (isChip) {
+      state.items.transactionDTO.forEach((transaction) => {
+        if (transaction.id === item.id) {
+          transaction.loading = true
+        }
+        return transaction
+      })
+    }
+
     const update = handleUpdateTransaction(item)
     const service = new TransactionsService.Transactions()
     await service.updateTransaction(update)
     search(state.pagination)
+    state.item.loading = false
   } catch (error) {
-    console.error('Error updating transaction status:', error)
+    console.error(error)
   } finally {
     loading.value = false
   }
@@ -141,7 +151,7 @@ const deleteTransaction = async (item: TransactionDTO) => {
     await service.deleteTransaction(item.id)
     search(state.pagination)
   } catch (error) {
-    console.error('Error deleting transaction:', error)
+    console.error(error)
   }
 }
 
@@ -199,11 +209,15 @@ onMounted(() => {
               <template v-slot:item.type="{ item }">
                 <v-row>
                   <v-col color="primary" class="align-left">
-                    <v-icon :color="parseInt(item.type) === 1 ? 'green' : 'red'">{{
-                      parseInt(item.type) === 1 ? 'mdi-arrow-up' : 'mdi-arrow-down'
-                    }}</v-icon>
-                    {{ parseInt(item.type) === 1 ? 'Receita' : 'Despesa' }}</v-col
-                  >
+                    <div class="d-flex align-center">
+                      <v-icon :color="parseInt(item.type) === 1 ? 'green' : 'red'">
+                        {{ parseInt(item.type) === 1 ? 'mdi-arrow-up' : 'mdi-arrow-down' }}
+                      </v-icon>
+                      <span class="ml-2">
+                        {{ parseInt(item.type) === 1 ? 'Receita' : 'Despesa' }}
+                      </span>
+                    </div>
+                  </v-col>
                 </v-row>
               </template>
               <template v-slot:item.date="{ item }">
@@ -214,19 +228,46 @@ onMounted(() => {
               <template v-slot:item.value="{ item }">
                 {{ item.value?.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) }}
               </template>
+
               <template v-slot:item.note="{ item }">
                 {{ item.note || '-' }}
               </template>
               <template v-slot:item.status="{ item }">
                 <div class="text-center">
                   <v-chip
-                    :color="item.status === PAID ? 'green' : item.status === PENDING ? 'red' : ''"
-                    :text="item.status"
+                    :color="
+                      item.status === PAID ? 'green' : item.status === PENDING ? 'warning' : ''
+                    "
                     class="text-uppercase"
                     size="small"
                     label
-                    @click="submit(item)"
-                  ></v-chip>
+                    @click="submit(item, true)"
+                  >
+                    <v-icon
+                      v-if="
+                        !state.items.transactionDTO.some(
+                          (transaction) => transaction.id === item.id && transaction.loading,
+                        )
+                      "
+                      >{{
+                        item.status === PAID
+                          ? 'mdi-check'
+                          : item.status === PENDING
+                            ? 'mdi-clock'
+                            : ''
+                      }}</v-icon
+                    >
+                    <v-progress-circular
+                      v-if="
+                        state.items.transactionDTO.some(
+                          (transaction) => transaction.id === item.id && transaction.loading,
+                        )
+                      "
+                      color="primary"
+                      indeterminate
+                      size="20"
+                    ></v-progress-circular>
+                  </v-chip>
                 </div>
               </template>
             </DataTable>
