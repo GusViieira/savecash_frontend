@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import TransactionModalView from './details/TransactionModalView.vue'
 import TransactionTableView from './details/TransactionTableView.vue'
+import AlertCard from '@/components/AlertCard.vue'
 
 const dialog = ref(false)
 </script>

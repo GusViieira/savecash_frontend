@@ -13,6 +13,7 @@ import { userStore } from '@/stores/userStore'
 import { onMounted, reactive, ref, watch } from 'vue'
 import { PAID, PENDING } from '@/utils/constants'
 import TransactionModalView from './TransactionModalView.vue'
+import AlertCard from '@/components/AlertCard.vue'
 
 const aba = ref()
 
@@ -20,6 +21,7 @@ const store = userStore()
 const monted = ref(false)
 const loading = ref(false)
 const dialog = ref(false)
+const deleteAlert = ref(false)
 
 const props = defineProps<{
   updateView?: boolean
@@ -145,6 +147,11 @@ const update = (item: TransactionDTO) => {
   dialog.value = true
 }
 
+const deleteItem = (item: TransactionDTO) => {
+  state.item = item
+  deleteAlert.value = true
+}
+
 const deleteTransaction = async (item: TransactionDTO) => {
   try {
     const service = new TransactionsService.Transactions()
@@ -204,7 +211,7 @@ onMounted(() => {
                 }
               "
               @edit="(item) => update(item as TransactionDTO)"
-              @delete="(item) => deleteTransaction(item as TransactionDTO)"
+              @delete="(item) => deleteItem(item as TransactionDTO)"
             >
               <template v-slot:item.type="{ item }">
                 <v-row>
@@ -288,4 +295,16 @@ onMounted(() => {
       "
     />
   </v-dialog>
+    <AlertCard
+    :alert="deleteAlert"
+    title="Atenção"
+    :text="'Deseja realmente excluir este lançamento ?'"
+    @close="(v) => (deleteAlert = v)"
+    @confirm:modelValue="(v) => {
+      deleteAlert = v
+      if (v) {
+        deleteTransaction(state.item)
+      }
+    }"
+  />
 </template>
