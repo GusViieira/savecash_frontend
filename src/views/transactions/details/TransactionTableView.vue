@@ -171,118 +171,118 @@ onMounted(() => {
 </script>
 <template>
   <LoadingComponent :value="loading" />
-  <v-tabs v-model="aba" color="primary">
-    <v-tab
-      v-for="tab in tabs"
-      :key="tab.value"
-      :value="tab.value"
-      @click="search(state.pagination)"
-    >
-      {{ tab.text }}
-    </v-tab>
-  </v-tabs>
+    <v-tabs align-tabs="center" v-model="aba" color="primary">
+      <v-tab
+        v-for="tab in tabs"
+        :key="tab.value"
+        :value="tab.value"
+        @click="search(state.pagination)"
+      >
+        {{ tab.text }}
+      </v-tab>
+    </v-tabs>
 
-  <v-card-text v-if="monted">
-    <v-tabs-window v-model="aba">
-      <v-tabs-window-item :value="aba">
-        <v-row>
-          <v-col cols="12" sm="12" md="4" lg="4">
-            <BalancesCards :title="'Receitas'" :value="state.items.revenue" />
-          </v-col>
-          <v-col cols="12" sm="12" md="4" lg="4">
-            <BalancesCards :title="'Despesas'" :value="state.items.expense" />
-          </v-col>
-          <v-col cols="12" sm="12" md="4" lg="4">
-            <BalancesCards :title="'Saldo final'" :value="state.items.finalBalance" />
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col>
-            <DataTable
-              :headers="headers"
-              :items="state.items.transactionDTO"
-              :totalPage="state.items.totalPage"
-              :size="state.pagination.size"
-              :page="state.pagination.page"
-              @update:page="
-                (v: number) => {
-                  state.pagination.page = v
-                  search(state.pagination)
-                }
-              "
-              @edit="(item) => update(item as TransactionDTO)"
-              @delete="(item) => deleteItem(item as TransactionDTO)"
-            >
-              <template v-slot:item.type="{ item }">
-                <v-row>
-                  <v-col color="primary" class="align-left">
-                    <div class="d-flex align-center">
-                      <v-icon :color="parseInt(item.type) === 1 ? 'green' : 'red'">
-                        {{ parseInt(item.type) === 1 ? 'mdi-arrow-up' : 'mdi-arrow-down' }}
-                      </v-icon>
-                      <span class="ml-2">
-                        {{ parseInt(item.type) === 1 ? 'Receita' : 'Despesa' }}
-                      </span>
-                    </div>
-                  </v-col>
-                </v-row>
-              </template>
-              <template v-slot:item.date="{ item }">
-                <div class="text-center">
-                  {{ new Date(item.date).toLocaleDateString('pt-BR') }}
-                </div>
-              </template>
-              <template v-slot:item.value="{ item }">
-                {{ item.value?.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) }}
-              </template>
+    <v-card-text v-if="monted">
+      <v-tabs-window v-model="aba">
+        <v-tabs-window-item :value="aba">
+          <v-row>
+            <v-col cols="12" sm="12" md="4" lg="4">
+              <BalancesCards :title="'Receitas'" :value="state.items.revenue" />
+            </v-col>
+            <v-col cols="12" sm="12" md="4" lg="4">
+              <BalancesCards :title="'Despesas'" :value="state.items.expense" />
+            </v-col>
+            <v-col cols="12" sm="12" md="4" lg="4">
+              <BalancesCards :title="'Saldo final'" :value="state.items.finalBalance" />
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <DataTable
+                :headers="headers"
+                :items="state.items.transactionDTO"
+                :totalPage="state.items.totalPage"
+                :size="state.pagination.size"
+                :page="state.pagination.page"
+                @update:page="
+                  (v: number) => {
+                    state.pagination.page = v
+                    search(state.pagination)
+                  }
+                "
+                @edit="(item) => update(item as TransactionDTO)"
+                @delete="(item) => deleteItem(item as TransactionDTO)"
+              >
+                <template v-slot:item.type="{ item }">
+                  <v-row>
+                    <v-col color="primary" class="align-left">
+                      <div class="d-flex align-center">
+                        <v-icon :color="parseInt(item.type) === 1 ? 'green' : 'red'">
+                          {{ parseInt(item.type) === 1 ? 'mdi-arrow-up' : 'mdi-arrow-down' }}
+                        </v-icon>
+                        <span class="ml-2">
+                          {{ parseInt(item.type) === 1 ? 'Receita' : 'Despesa' }}
+                        </span>
+                      </div>
+                    </v-col>
+                  </v-row>
+                </template>
+                <template v-slot:item.date="{ item }">
+                  <div class="text-center">
+                    {{ new Date(item.date).toLocaleDateString('pt-BR') }}
+                  </div>
+                </template>
+                <template v-slot:item.value="{ item }">
+                  {{ item.value?.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) }}
+                </template>
 
-              <template v-slot:item.note="{ item }">
-                {{ item.note || '-' }}
-              </template>
-              <template v-slot:item.status="{ item }">
-                <div class="text-center">
-                  <v-chip
-                    :color="
-                      item.status === PAID ? 'green' : item.status === PENDING ? 'warning' : ''
-                    "
-                    class="text-uppercase"
-                    size="small"
-                    label
-                    @click="submit(item, true)"
-                  >
-                    <v-icon
-                      v-if="
-                        !state.items.transactionDTO.some(
-                          (transaction) => transaction.id === item.id && transaction.loading,
-                        )
+                <template v-slot:item.note="{ item }">
+                  {{ item.note || '-' }}
+                </template>
+                <template v-slot:item.status="{ item }">
+                  <div class="text-center">
+                    <v-chip
+                      :color="
+                        item.status === PAID ? 'green' : item.status === PENDING ? 'warning' : ''
                       "
-                      >{{
-                        item.status === PAID
-                          ? 'mdi-check'
-                          : item.status === PENDING
-                            ? 'mdi-clock'
-                            : ''
-                      }}</v-icon
+                      class="text-uppercase"
+                      size="small"
+                      label
+                      @click="submit(item, true)"
                     >
-                    <v-progress-circular
-                      v-if="
-                        state.items.transactionDTO.some(
-                          (transaction) => transaction.id === item.id && transaction.loading,
-                        )
-                      "
-                      color="primary"
-                      indeterminate
-                      size="20"
-                    ></v-progress-circular>
-                  </v-chip>
-                </div>
-              </template>
-            </DataTable>
-          </v-col>
-        </v-row>
-      </v-tabs-window-item>
-    </v-tabs-window>
-  </v-card-text>
+                      <v-icon
+                        v-if="
+                          !state.items.transactionDTO.some(
+                            (transaction) => transaction.id === item.id && transaction.loading,
+                          )
+                        "
+                        >{{
+                          item.status === PAID
+                            ? 'mdi-check'
+                            : item.status === PENDING
+                              ? 'mdi-clock'
+                              : ''
+                        }}</v-icon
+                      >
+                      <v-progress-circular
+                        v-if="
+                          state.items.transactionDTO.some(
+                            (transaction) => transaction.id === item.id && transaction.loading,
+                          )
+                        "
+                        color="primary"
+                        indeterminate
+                        size="20"
+                      ></v-progress-circular>
+                    </v-chip>
+                  </div>
+                </template>
+              </DataTable>
+            </v-col>
+          </v-row>
+        </v-tabs-window-item>
+      </v-tabs-window>
+    </v-card-text>
   <v-dialog v-model="dialog" max-width="600">
     <TransactionModalView
       :isUpdate="true"
@@ -295,16 +295,20 @@ onMounted(() => {
       "
     />
   </v-dialog>
-    <AlertCard
+  <AlertCard
     :alert="deleteAlert"
     title="Atenção"
     :text="'Deseja realmente excluir este lançamento ?'"
     @close="(v) => (deleteAlert = v)"
-    @confirm:modelValue="(v) => {
-      deleteAlert = v
-      if (v) {
-        deleteTransaction(state.item)
+    @confirm:modelValue="
+      (v) => {
+        deleteAlert = v
+        if (v) {
+          deleteTransaction(state.item)
+        }
       }
-    }"
+    "
   />
 </template>
+<style scoped>
+</style>

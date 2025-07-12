@@ -2,7 +2,6 @@
 import { ref } from 'vue'
 import TransactionModalView from './details/TransactionModalView.vue'
 import TransactionTableView from './details/TransactionTableView.vue'
-import AlertCard from '@/components/AlertCard.vue'
 
 const dialog = ref(false)
 </script>
@@ -19,7 +18,7 @@ const dialog = ref(false)
         </v-col>
         <v-col cols="12" sm="12" md="6" lg="3" class="text-right">
           <v-btn class="button" color="primary" icon size="small">
-            <v-icon class="pa-5">mdi-filter-variant</v-icon>
+          <v-icon class="pa-5">mdi-filter-variant</v-icon>
           </v-btn>
         </v-col>
       </v-row>
