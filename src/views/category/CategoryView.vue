@@ -36,7 +36,6 @@ const state = reactive<state>({
 </script>
 
 <template>
-  <h1>Gerenciar categorias</h1>
   <v-card>
     <v-card-title class="bg-lightGrey pa-5">
       <v-row>

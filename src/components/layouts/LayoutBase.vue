@@ -4,6 +4,7 @@ import { onMounted, ref, watch } from 'vue'
 import avatarSrc from '@/assets/images/avatar.svg'
 import { useRouter } from 'vue-router'
 import { useTheme } from 'vuetify'
+import { title } from 'process'
 
 const theme = useTheme()
 const store = userStore()
@@ -33,6 +34,12 @@ const toggleTheme = () => {
   localStorage.setItem('theme', newTheme)
   applyThemeToBody(newTheme)
 }
+
+const getCurrentPageTitle = () => {
+  const route = router.currentRoute.value;
+  return route.meta?.title || route.meta?.displayName;
+ }
+
 watch(() => theme.global.name.value, applyThemeToBody)
 onMounted(() => applyThemeToBody(savedTheme))
 </script>
@@ -122,6 +129,9 @@ onMounted(() => applyThemeToBody(savedTheme))
     </v-navigation-drawer>
     <v-main>
       <div class="pa-8">
+      <div>
+        <h1>{{ getCurrentPageTitle() === "Olá, " ?  getCurrentPageTitle() + store.name + '👋' : getCurrentPageTitle() }}</h1>
+      </div>
         <router-view />
       </div>
     </v-main>

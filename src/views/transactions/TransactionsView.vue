@@ -7,7 +7,6 @@ const dialog = ref(false)
 </script>
 
 <template>
-  <h1>Lançamentos 🚀</h1>
   <v-card>
     <v-card-title class="bg-lightGrey pa-5">
       <v-row>
