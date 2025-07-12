@@ -49,7 +49,7 @@ const state = reactive<state>({
 <template>
   <h1>Gerenciar contas</h1>
   <v-card>
-    <v-card-title class="bg-lightGrey pt-6 px-5">
+    <v-card-title class="bg-lightGrey pa-5">
       <v-row>
         <v-col>
           <v-btn class="button" color="primary" rounded="xl" @click="dialog = true">
@@ -94,7 +94,7 @@ const state = reactive<state>({
               </v-col>
             </v-row>
           </div>
-          <div v-else-if="aba === 2" class="mt-8">
+          <div v-else-if="aba === 2" class="mt-6">
             <data-table
               :headers="headers"
               :items="state.items.transactionDTO"

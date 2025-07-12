@@ -88,6 +88,12 @@ onMounted(() => applyThemeToBody(savedTheme))
           value="account-group"
           @click="router.push({ name: 'Wallets' })"
         ></v-list-item>
+        <v-list-item
+          prepend-icon="mdi-shape-outline"
+          title="Gerenciar categorias"
+          value="category"
+          @click="router.push({ name: 'Category' })"
+        ></v-list-item>
       </v-list>
       <template v-slot:append>
         <v-row class="pa-2 justify-space-between align-center">
