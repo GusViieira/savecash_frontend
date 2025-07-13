@@ -1,16 +1,25 @@
 <script setup lang="ts">
 import { userStore } from '@/stores/userStore'
-import { onMounted, ref, watch } from 'vue'
+import { onMounted, reactive, ref, watch } from 'vue'
 import avatarSrc from '@/assets/images/avatar.svg'
 import { useRouter } from 'vue-router'
 import { useTheme } from 'vuetify'
-import { title } from 'process'
+import AccountService from '@/services/AccountService'
+import type AccountResponseModel from '@/models/response/AccountResponseModel'
 
 const theme = useTheme()
 const store = userStore()
 const router = useRouter()
 
 const isRail = ref(true)
+
+interface state {
+  account: AccountResponseModel[]
+}
+
+const state =reactive<state>({
+  account: []
+})
 
 const savedTheme = localStorage.getItem('theme') || 'light'
 theme.global.name.value = savedTheme
@@ -36,12 +45,37 @@ const toggleTheme = () => {
 }
 
 const getCurrentPageTitle = () => {
-  const route = router.currentRoute.value;
-  return route.meta?.title || route.meta?.displayName;
- }
+  const route = router.currentRoute.value
+  return route.meta?.title || route.meta?.displayName
+}
+
+const items = [
+  { title: 'Click Me' },
+  { title: 'Click Me' },
+  { title: 'Click Me' },
+  { title: 'Click Me 2' },
+]
+
+const searchAccount = async() => {
+  try {
+    const service = new AccountService.AccountService()
+    const response = await service.getAccounts(store.idUser)
+    if (response.status === 200)
+      state.account = response.data.content
+    else
+      console.error('Failed to fetch accounts:', response.status)
+
+  }catch (error) {
+    console.error('Error searching account:', error)
+  }
+}
 
 watch(() => theme.global.name.value, applyThemeToBody)
-onMounted(() => applyThemeToBody(savedTheme))
+
+onMounted(() => {
+  applyThemeToBody(savedTheme)
+  searchAccount()
+})
 </script>
 <template>
   <v-layout>
@@ -128,12 +162,47 @@ onMounted(() => applyThemeToBody(savedTheme))
       </template>
     </v-navigation-drawer>
     <v-main>
-      <div class="pa-8">
-      <div>
-        <h1>{{ getCurrentPageTitle() === "Olá, " ?  getCurrentPageTitle() + store.name + '👋' : getCurrentPageTitle() }}</h1>
-      </div>
-        <router-view />
-      </div>
+      <v-row class="px-8 pt-4">
+        <v-col cols="12" sm="12" md="6" lg="3">
+          <h1>
+            {{
+              getCurrentPageTitle() === 'Olá, '
+                ? getCurrentPageTitle() + store.name + '👋'
+                : getCurrentPageTitle()
+            }}
+          </h1>
+        </v-col>
+        <v-col cols="12" sm="12" md="6" lg="9" class="text-right pt-5">
+          <v-menu transition="slide-y-transition">
+            <template v-slot:activator="{ props }">
+              <v-btn color="primary" v-bind="props">
+                {{ state.account.length > 0 ? state.account[0].name : 'Selecione uma conta' }}
+                <v-icon right>mdi-chevron-down</v-icon>
+              </v-btn>
+            </template>
+
+            <v-list>
+              <!-- Item fixo -->
+              <v-list-item @click="console.log('teste')" value="fixed-item">
+                <v-list-item-title>
+                  <v-icon left>mdi-bank-plus</v-icon>
+                  <span class="ml-2">Criar conta</span>
+                </v-list-item-title>
+              </v-list-item>
+              <v-divider></v-divider>
+              <!-- Items dinâmicos -->
+              <v-list-item v-for="(item, i) in items" :key="i" :value="i">
+                <v-list-item-title>{{ item.title }}</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
+        </v-col>
+      </v-row>
+      <v-row class="px-8">
+        <v-col cols="12">
+          <router-view />
+        </v-col>
+      </v-row>
     </v-main>
   </v-layout>
 </template>
