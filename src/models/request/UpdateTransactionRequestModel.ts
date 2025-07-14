@@ -10,4 +10,5 @@ export interface UpdateTransactionRequestModel {
     status: string
     isRecurrent: string
     note?: string
+    idAccount: number
 }

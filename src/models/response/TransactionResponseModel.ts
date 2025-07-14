@@ -23,4 +23,5 @@ export interface TransactionDTO {
   idUser: number
   isRecurrent: string
   loading?: boolean
+  idAccount: number
 }

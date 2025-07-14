@@ -14,10 +14,13 @@ import { onMounted, reactive, ref, watch } from 'vue'
 import { PAID, PENDING } from '@/utils/constants'
 import TransactionModalView from './TransactionModalView.vue'
 import AlertCard from '@/components/AlertCard.vue'
+import { accountStore as useAccountStore } from '@/stores/accountStore'
 
 const aba = ref()
 
 const store = userStore()
+const accountStore = useAccountStore()
+
 const monted = ref(false)
 const loading = ref(false)
 const dialog = ref(false)
@@ -89,9 +92,10 @@ const search = async (pagination: Pagination) => {
     const service = new TransactionsService.Transactions()
     const response = await service.getTransaction(
       store.idUser,
+      accountStore.account.idAccount,
       aba.value,
       pagination.page,
-      pagination.size,
+      pagination.size
     )
     if (response.data.content) {
       state.items = response.data.content
@@ -115,6 +119,7 @@ const submit = async (item: TransactionDTO, isChip: boolean) => {
     }
 
     const update = handleUpdateTransaction(item)
+    console.log(update)
     const service = new TransactionsService.Transactions()
     await service.updateTransaction(update)
     search(state.pagination)
@@ -139,6 +144,7 @@ const handleUpdateTransaction = (item: TransactionDTO): UpdateTransactionRequest
     status: item.status === PENDING ? PAID : PENDING,
     idUser: item.idUser,
     isRecurrent: item.isRecurrent,
+    idAccount: item.idAccount
   }
 }
 
@@ -167,6 +173,7 @@ onMounted(() => {
   const atualMonth = today.getMonth() + 1
   aba.value = atualMonth
   search(state.pagination)
+  console.log(accountStore.account)
 })
 </script>
 <template>
@@ -233,7 +240,7 @@ onMounted(() => {
                   </div>
                 </template>
                 <template v-slot:item.value="{ item }">
-                  {{ item.value?.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) }}
+                  {{ item.value?.toLocaleString('pt-BR', { style: 'currency', currency: accountStore.account.currency }) }}
                 </template>
 
                 <template v-slot:item.note="{ item }">

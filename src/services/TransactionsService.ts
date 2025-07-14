@@ -11,8 +11,8 @@ class Transactions {
     return await request<string>('POST', path + '/create', transaction)
   }
 
-  async getTransaction(id: number, aba: number, page: number, size: number): Promise<AxiosResponse<ApiResponse<TransactionResponseModel>>> {
-    return await request<TransactionResponseModel>('GET', path + `/transactions?idUser=${id}&month=${aba}&page=${page}&size=${size}`)
+  async getTransaction(id: number, idAccount: number, aba: number, page: number, size: number): Promise<AxiosResponse<ApiResponse<TransactionResponseModel>>> {
+    return await request<TransactionResponseModel>('GET', path + `/transactions?idUser=${id}&idAccount=${idAccount}&month=${aba}&page=${page}&size=${size}`)
   }
 
   async updateTransaction<T extends object>(

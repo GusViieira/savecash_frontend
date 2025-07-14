@@ -50,9 +50,9 @@ const submit = async () => {
       return
     }
     localStorage.setItem('token', response.data.content?.jwt as string)
-    store.name = response.data.content?.name as string
-    store.email = response.data.content?.email as string
-    store.idUser = response.data.content?.idUser
+    store.name = response.data.content.name as string
+    store.email = response.data.content.email as string
+    store.idUser = response.data.content.idUser
     loading.value = false
     router.push({ name: 'Home' })
   } catch (e) {

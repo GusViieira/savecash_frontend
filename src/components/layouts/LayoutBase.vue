@@ -6,10 +6,17 @@ import { useRouter } from 'vue-router'
 import { useTheme } from 'vuetify'
 import AccountService from '@/services/AccountService'
 import type AccountResponseModel from '@/models/response/AccountResponseModel'
+import { accountStore as useAccountStore } from '@/stores/accountStore'
 
 const theme = useTheme()
+
+const accountStore = useAccountStore()
 const store = userStore()
+
+
 const router = useRouter()
+const accountName = ref()
+const viewKey = ref(0)
 
 const isRail = ref(true)
 
@@ -17,8 +24,8 @@ interface state {
   account: AccountResponseModel[]
 }
 
-const state =reactive<state>({
-  account: []
+const state = reactive<state>({
+  account: [],
 })
 
 const savedTheme = localStorage.getItem('theme') || 'light'
@@ -49,30 +56,31 @@ const getCurrentPageTitle = () => {
   return route.meta?.title || route.meta?.displayName
 }
 
-const items = [
-  { title: 'Click Me' },
-  { title: 'Click Me' },
-  { title: 'Click Me' },
-  { title: 'Click Me 2' },
-]
-
-const searchAccount = async() => {
+const searchAccount = async () => {
   try {
     const service = new AccountService.AccountService()
     const response = await service.getAccounts(store.idUser)
-    if (response.status === 200)
+    if (response.status === 200) {
       state.account = response.data.content
-    else
-      console.error('Failed to fetch accounts:', response.status)
-
-  }catch (error) {
+      accountStore.account = state.account[0]
+      accountName.value = state.account[0].name
+    }
+    else console.error('Failed to fetch accounts:', response.status)
+  } catch (error) {
     console.error('Error searching account:', error)
   }
 }
 
 watch(() => theme.global.name.value, applyThemeToBody)
 
+const handleAccountBtn = (account: AccountResponseModel) => {
+  accountStore.account = account
+  accountName.value = account.name
+  viewKey.value++
+}
+
 onMounted(() => {
+  console.log()
   applyThemeToBody(savedTheme)
   searchAccount()
 })
@@ -155,12 +163,13 @@ onMounted(() => {
                 @click="router.push({ name: 'Settings' })"
                 icon="mdi-cog-outline"
               />
-              <v-btn class="pa-2" variant="text" @click="logout" icon="mdi-exit-to-app"> </v-btn>
+              <v-btn class="pa-2" variant="text" @click="logout()" icon="mdi-exit-to-app"> </v-btn>
             </v-col>
           </v-slide-x-transition>
         </v-row>
       </template>
     </v-navigation-drawer>
+
     <v-main>
       <v-row class="px-8 pt-4">
         <v-col cols="12" sm="12" md="6" lg="3">
@@ -175,15 +184,15 @@ onMounted(() => {
         <v-col cols="12" sm="12" md="6" lg="9" class="text-right pt-5">
           <v-menu transition="slide-y-transition">
             <template v-slot:activator="{ props }">
-              <v-btn color="primary" v-bind="props">
-                {{ state.account.length > 0 ? state.account[0].name : 'Selecione uma conta' }}
+              <v-btn color="primary" v-bind="props" variant="outlined">
+                {{ state.account.length > 0 ? accountName : 'Selecione uma conta' }}
                 <v-icon right>mdi-chevron-down</v-icon>
               </v-btn>
             </template>
 
             <v-list>
               <!-- Item fixo -->
-              <v-list-item @click="console.log('teste')" value="fixed-item">
+              <v-list-item value="fixed-item">
                 <v-list-item-title>
                   <v-icon left>mdi-bank-plus</v-icon>
                   <span class="ml-2">Criar conta</span>
@@ -191,8 +200,8 @@ onMounted(() => {
               </v-list-item>
               <v-divider></v-divider>
               <!-- Items dinâmicos -->
-              <v-list-item v-for="(item, i) in items" :key="i" :value="i">
-                <v-list-item-title>{{ item.title }}</v-list-item-title>
+              <v-list-item v-for="(account, i) in state.account" :key="i" :value="i">
+                <v-list-item-title @click="handleAccountBtn(account)">{{ account.name }}</v-list-item-title>
               </v-list-item>
             </v-list>
           </v-menu>
@@ -200,7 +209,7 @@ onMounted(() => {
       </v-row>
       <v-row class="px-8">
         <v-col cols="12">
-          <router-view />
+          <router-view :key="viewKey"/>
         </v-col>
       </v-row>
     </v-main>

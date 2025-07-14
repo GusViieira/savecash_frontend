@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import { accountStore as useAccountStore } from '@/stores/accountStore';
+
+
+const accountStore = useAccountStore()
+
 const props = defineProps<{
   title: string
   value: number
@@ -16,7 +21,7 @@ const props = defineProps<{
         'text-green': props.title === 'Saldo final' && props.value > 0,
       }"
     >
-      {{ props.value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) }}
+      {{ props.value.toLocaleString('pt-BR', { style: 'currency', currency: accountStore.account.currency }) }}
       <span class="detail-bg d-flex float-end">$</span>
     </v-card-text>
   </v-card>

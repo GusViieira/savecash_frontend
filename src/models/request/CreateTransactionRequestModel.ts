@@ -8,4 +8,5 @@ export interface CreateTransactionRequestModel {
     status: string
     isRecurrent: string
     note?: string
+    idAccount: number
 }

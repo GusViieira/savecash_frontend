@@ -6,6 +6,7 @@ import type { UpdateTransactionRequestModel } from '@/models/request/UpdateTrans
 import type { CategoryResponseModel } from '@/models/response/CategoryResponseModel'
 import CategoryService from '@/services/CategoryService'
 import TransactionsService from '@/services/TransactionsService'
+import { accountStore as useAccountStore } from '@/stores/accountStore'
 import { userStore } from '@/stores/userStore'
 import { convertDate, convertDateToServe } from '@/utils/date'
 import { onMounted, reactive, ref } from 'vue'
@@ -17,6 +18,7 @@ const alertSucess = ref(false)
 const title = ref('Novo Lançamento')
 
 const store = userStore()
+const accountStore = useAccountStore()
 
 const props = defineProps<{
   isUpdate?: boolean
@@ -54,6 +56,7 @@ const submit = async () => {
     loading.value = true
     const service = new TransactionsService.Transactions()
     state.createTransaction.idUser = store.idUser
+    state.createTransaction.idAccount = accountStore.account.idAccount
     state.createTransaction.date = convertDateToServe(state.createTransaction.date)
     const response = await service.createTransaction(state.createTransaction)
     if (response.data.content) {
@@ -72,6 +75,7 @@ const submitUpdate = async () => {
     loading.value = true
     const service = new TransactionsService.Transactions()
     fillUpdateTransaction()
+    state.updateTransaction.idAccount = accountStore.account.idAccount
     const response = await service.updateTransaction(state.updateTransaction)
     if (response.data.content) {
       alertSucess.value = true
@@ -153,7 +157,7 @@ onMounted(() => {
             density="compact"
             type="text"
             class="mr-2"
-            prefix="R$"
+            :prefix="(0).toLocaleString('pt-BR', { style: 'currency', currency: accountStore.account.currency }).replace(/\s?0,00$/, '')"
             :rules="[(v) => !!v || 'Valor é obrigatório']"
           />
         </v-col>
