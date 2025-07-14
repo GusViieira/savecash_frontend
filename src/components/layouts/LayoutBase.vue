@@ -170,10 +170,15 @@ onMounted(() => {
       </template>
     </v-navigation-drawer>
 
-    <v-main>
-      <v-row class="px-8 pt-4">
-        <v-col cols="12" sm="12" md="6" lg="3">
-          <h1>
+<v-main>
+  <v-row justify="center" class="px-8">
+    <v-col cols="12" sm="12" md="12" lg="12" xxl="8">
+
+      <!-- LINHA com título e menu -->
+      <v-row>
+        <!-- Título à esquerda -->
+        <v-col cols="12" sm="6" md="6" lg="6">
+          <h1 class="pa-3">
             {{
               getCurrentPageTitle() === 'Olá, '
                 ? getCurrentPageTitle() + store.name + '👋'
@@ -181,7 +186,9 @@ onMounted(() => {
             }}
           </h1>
         </v-col>
-        <v-col cols="12" sm="12" md="6" lg="9" class="text-right pt-5">
+
+        <!-- Botão de contas à direita -->
+        <v-col cols="12" sm="6" md="6" lg="6" class="text-right mt-5">
           <v-menu transition="slide-y-transition">
             <template v-slot:activator="{ props }">
               <v-btn color="primary" v-bind="props" variant="outlined">
@@ -191,7 +198,6 @@ onMounted(() => {
             </template>
 
             <v-list>
-              <!-- Item fixo -->
               <v-list-item value="fixed-item">
                 <v-list-item-title>
                   <v-icon left>mdi-bank-plus</v-icon>
@@ -199,20 +205,27 @@ onMounted(() => {
                 </v-list-item-title>
               </v-list-item>
               <v-divider></v-divider>
-              <!-- Items dinâmicos -->
-              <v-list-item v-for="(account, i) in state.account" :key="i" :value="i">
-                <v-list-item-title @click="handleAccountBtn(account)">{{ account.name }}</v-list-item-title>
+              <v-list-item
+                v-for="(account, i) in state.account"
+                :key="i"
+                :value="i"
+              >
+                <v-list-item-title @click="handleAccountBtn(account)">
+                  {{ account.name }}
+                </v-list-item-title>
               </v-list-item>
             </v-list>
           </v-menu>
         </v-col>
       </v-row>
-      <v-row class="px-8">
-        <v-col cols="12">
-          <router-view :key="viewKey"/>
-        </v-col>
-      </v-row>
-    </v-main>
+
+      <!-- CONTEÚDO -->
+      <router-view :key="viewKey" />
+
+    </v-col>
+  </v-row>
+</v-main>
+
   </v-layout>
 </template>
 <style scoped>
