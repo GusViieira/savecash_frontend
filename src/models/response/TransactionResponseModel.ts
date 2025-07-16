@@ -1,15 +1,18 @@
 export interface TransactionResponseModel {
   expense: number
-  finalBalance: number
   revenue: number
+  expensePaid: number
+  revenuePaid: number
+  finalBalance: number
+  atualBalance: number
   page: number
   size: number
   totalPage: number
-  transactionDTO: TransactionDTO[]
+  transactions: Transactions[]
 }
 
 
-export interface TransactionDTO {
+export interface Transactions {
   id: number
   type: number
   description: string

@@ -40,6 +40,7 @@ const submit = async () => {
   try {
     const loginService = new LoginService()
     loading.value = true
+    localStorage.removeItem('token')
     const response = await loginService.login(state.value.login)
     if (response.data.errors?.length) {
       response.data.errors.forEach((error) => {

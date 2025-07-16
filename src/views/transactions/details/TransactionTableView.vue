@@ -5,7 +5,7 @@ import LoadingComponent from '@/components/LoadingComponent.vue'
 import type { Pagination } from '@/models/Pagination'
 import type { UpdateTransactionRequestModel } from '@/models/request/UpdateTransactionRequestModel'
 import type {
-  TransactionDTO,
+  Transactions,
   TransactionResponseModel,
 } from '@/models/response/TransactionResponseModel'
 import TransactionsService from '@/services/TransactionsService'
@@ -41,13 +41,13 @@ watch(
 
 interface state {
   items: TransactionResponseModel
-  item: TransactionDTO
+  item: Transactions
   pagination: Pagination
 }
 
 const state = reactive<state>({
   items: {} as TransactionResponseModel,
-  item: { loading: false } as TransactionDTO,
+  item: { loading: false } as Transactions,
   pagination: {
     page: 0,
     size: 10,
@@ -107,10 +107,10 @@ const search = async (pagination: Pagination) => {
   }
 }
 
-const submit = async (item: TransactionDTO, isChip: boolean) => {
+const submit = async (item: Transactions, isChip: boolean) => {
   try {
     if (isChip) {
-      state.items.transactionDTO.forEach((transaction) => {
+      state.items.transactions.forEach((transaction) => {
         if (transaction.id === item.id) {
           transaction.loading = true
         }
@@ -131,7 +131,7 @@ const submit = async (item: TransactionDTO, isChip: boolean) => {
   }
 }
 
-const handleUpdateTransaction = (item: TransactionDTO): UpdateTransactionRequestModel => {
+const handleUpdateTransaction = (item: Transactions): UpdateTransactionRequestModel => {
   return {
     id: item.id,
     type: item.type,
@@ -148,17 +148,17 @@ const handleUpdateTransaction = (item: TransactionDTO): UpdateTransactionRequest
   }
 }
 
-const update = (item: TransactionDTO) => {
+const update = (item: Transactions) => {
   state.item = item
   dialog.value = true
 }
 
-const deleteItem = (item: TransactionDTO) => {
+const deleteItem = (item: Transactions) => {
   state.item = item
   deleteAlert.value = true
 }
 
-const deleteTransaction = async (item: TransactionDTO) => {
+const deleteTransaction = async (item: Transactions) => {
   try {
     const service = new TransactionsService.Transactions()
     await service.deleteTransaction(item.id)
@@ -173,7 +173,6 @@ onMounted(() => {
   const atualMonth = today.getMonth() + 1
   aba.value = atualMonth
   search(state.pagination)
-  console.log(accountStore.account)
 })
 </script>
 <template>
@@ -194,20 +193,20 @@ onMounted(() => {
         <v-tabs-window-item :value="aba">
           <v-row>
             <v-col cols="12" sm="12" md="4" lg="4">
-              <BalancesCards :title="'Receitas'" :value="state.items.revenue" />
+              <BalancesCards :title="'Receitas'" :subtitle="'Receitas recebidas'" :value="state.items.revenue" :subvalue="state.items.revenuePaid" />
             </v-col>
             <v-col cols="12" sm="12" md="4" lg="4">
-              <BalancesCards :title="'Despesas'" :value="state.items.expense" />
+              <BalancesCards :title="'Despesas'" :subtitle="'Despesas pagas'" :value="state.items.expense" :subvalue="state.items.expensePaid"/>
             </v-col>
             <v-col cols="12" sm="12" md="4" lg="4">
-              <BalancesCards :title="'Saldo final'" :value="state.items.finalBalance" />
+              <BalancesCards :title="'Balanço mensal'" :subtitle="'Saldo atual'" :value="state.items.finalBalance"  :subvalue="state.items.atualBalance"/>
             </v-col>
           </v-row>
           <v-row>
             <v-col>
               <DataTable
                 :headers="headers"
-                :items="state.items.transactionDTO"
+                :items="state.items.transactions"
                 :totalPage="state.items.totalPage"
                 :size="state.pagination.size"
                 :page="state.pagination.page"
@@ -217,8 +216,8 @@ onMounted(() => {
                     search(state.pagination)
                   }
                 "
-                @edit="(item) => update(item as TransactionDTO)"
-                @delete="(item) => deleteItem(item as TransactionDTO)"
+                @edit="(item) => update(item as Transactions)"
+                @delete="(item) => deleteItem(item as Transactions)"
               >
                 <template v-slot:item.type="{ item }">
                   <v-row>
@@ -259,7 +258,7 @@ onMounted(() => {
                     >
                       <v-icon
                         v-if="
-                          !state.items.transactionDTO.some(
+                          !state.items.transactions.some(
                             (transaction) => transaction.id === item.id && transaction.loading,
                           )
                         "
@@ -273,7 +272,7 @@ onMounted(() => {
                       >
                       <v-progress-circular
                         v-if="
-                          state.items.transactionDTO.some(
+                          state.items.transactions.some(
                             (transaction) => transaction.id === item.id && transaction.loading,
                           )
                         "
