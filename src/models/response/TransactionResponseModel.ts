@@ -5,6 +5,7 @@ export interface TransactionResponseModel {
   revenuePaid: number
   finalBalance: number
   atualBalance: number
+  predictedBalance: number
   page: number
   size: number
   totalPage: number

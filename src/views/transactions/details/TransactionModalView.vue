@@ -58,6 +58,8 @@ const submit = async () => {
     state.createTransaction.idUser = store.idUser
     state.createTransaction.idAccount = accountStore.account.idAccount
     state.createTransaction.date = convertDateToServe(state.createTransaction.date)
+    state.createTransaction.value = parseFloat(state.createTransaction.value.toString().replace(",", "."))
+    console.log(state.createTransaction.value)
     const response = await service.createTransaction(state.createTransaction)
     if (response.data.content) {
       alertSucess.value = true
@@ -109,6 +111,14 @@ onMounted(() => {
   state.createTransaction.type = 1 // Default to revenue
 })
 
+const maskOptions = {
+  reversed: true,
+  preProcess: (val: string) => val.replace(/[R$\s]/g, ''),
+  postProcess: (val: string) => {
+    if (!val) return ''
+    return val.replace('.', ',') // Converte ponto para vírgula
+  }
+}
 </script>
 <template>
   <LoadingComponent :value="loading"/>
@@ -157,6 +167,7 @@ onMounted(() => {
             density="compact"
             type="text"
             class="mr-2"
+            :v-mask="[maskOptions, '9999999999,99']"
             :prefix="(0).toLocaleString('pt-BR', { style: 'currency', currency: accountStore.account.currency }).replace(/\s?0,00$/, '')"
             :rules="[(v) => !!v || 'Valor é obrigatório']"
           />

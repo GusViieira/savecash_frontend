@@ -198,8 +198,11 @@ onMounted(() => {
             <v-col cols="12" sm="12" md="4" lg="4">
               <BalancesCards :title="'Despesas'" :subtitle="'Despesas pagas'" :value="state.items.expense" :subvalue="state.items.expensePaid"/>
             </v-col>
-            <v-col cols="12" sm="12" md="4" lg="4">
-              <BalancesCards :title="'Balanço mensal'" :subtitle="'Saldo atual'" :value="state.items.finalBalance"  :subvalue="state.items.atualBalance"/>
+            <v-col cols="12" sm="12" md="4" lg="4" v-if="aba <= new Date().getMonth() + 1">
+              <BalancesCards  :title="'Balanço mensal'" :subtitle="'Saldo atual'" :value="state.items.finalBalance"  :subvalue="state.items.atualBalance"/>
+            </v-col>
+            <v-col cols="12" sm="12" md="4" lg="4" v-else>
+              <BalancesCards :title="'Balanço mensal'" :subtitle="'Saldo previsto'" :value="state.items.finalBalance"  :subvalue="state.items.predictedBalance"/>
             </v-col>
           </v-row>
           <v-row>
