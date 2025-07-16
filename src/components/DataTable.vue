@@ -51,7 +51,15 @@ watch(
       </div>
     </template>
     <template v-slot:item.actions="{ item }">
-      <v-row align="center" justify="center">
+      <v-row align="center" justify="center" no-gutters>
+        <v-col class="px-2" cols="auto">
+          <v-btn
+            density="compact"
+            variant="text"
+            icon="mdi-information-outline"
+            color="primary"
+            ></v-btn>
+        </v-col>
         <v-col cols="auto">
           <v-btn
             density="compact"
@@ -61,7 +69,7 @@ watch(
             @click="$emit('edit', item)"
           ></v-btn>
         </v-col>
-        <v-col cols="auto">
+        <v-col class="px-2" cols="auto">
           <v-btn
             density="compact"
             variant="text"
