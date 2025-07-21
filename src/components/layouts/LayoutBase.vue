@@ -135,7 +135,7 @@ onMounted(() => {
           prepend-icon="mdi-account-group-outline"
           title="Gerenciar carteiras"
           value="account-group"
-          @click="router.push({ name: 'Wallets' })"
+          @click="router.push({ name: 'Accounts' })"
         ></v-list-item>
         <v-list-item
           prepend-icon="mdi-shape-outline"

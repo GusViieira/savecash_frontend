@@ -7,7 +7,7 @@ import ResetPassView from '@/views/ResetPassView.vue'
 import BoxesView from '@/views/boxes/BoxesView.vue'
 import SettingsView from '@/views/config/SettingView.vue'
 import GoalsView from '@/views/goals/GoalsView.vue'
-import WalletsView from '@/views/wallets/WalletsView.vue'
+import AccountsView from '@/views/wallets/AccountsView.vue'
 import CategoryView from '@/views/category/CategoryView.vue'
 
 function isAuthenticated() {
@@ -64,9 +64,9 @@ const routes = [
         meta: { requiresAuth: true, title: 'Configurações ⚙️'},
       },
       {
-        path: 'wallets',
-        name: 'Wallets',
-        component: WalletsView,
+        path: 'accounts',
+        name: 'Accounts',
+        component: AccountsView,
         meta: { requiresAuth: true, title: 'Contas 💳' },
       },
       {

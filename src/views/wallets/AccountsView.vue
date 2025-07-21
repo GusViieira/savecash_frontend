@@ -1,16 +1,22 @@
 <script setup lang="ts" name="WalletsView">
-import { ref } from 'vue'
-import WalletCardView from './detail/WalletCardView.vue'
+import { onMounted, ref } from 'vue'
+import WalletCardView from './detail/AccountCardView.vue'
 import { reactive } from 'vue'
 import type { Pagination } from '@/models/Pagination'
 import type {
-  TransactionDTO,
+  Transactions,
   TransactionResponseModel,
 } from '@/models/response/TransactionResponseModel'
 
 import DataTable from '@/components/DataTable.vue'
+import CarouselCard from '@/components/CarouselCard.vue'
+import AccountService from '@/services/AccountService'
+import { userStore as useUserStore } from '@/stores/userStore'
+import type AccountResponseModel from '@/models/response/AccountResponseModel'
 
 const aba = ref(1)
+
+const userStore = useUserStore()
 
 const tabs = ref([
   { value: 1, text: 'DADOS DA CONTA' },
@@ -35,15 +41,43 @@ const headers = [
   { key: 'actions', title: 'Ações', sortable: false, align: 'center' },
 ]
 
+interface state {
+  items: TransactionResponseModel
+  item: Transactions
+  pagination: Pagination
+  accounts: AccountResponseModel[]
+  account: AccountResponseModel
+}
+
 const state = reactive<state>({
   items: {} as TransactionResponseModel,
-  item: { loading: false } as TransactionDTO,
+  item: { loading: false } as Transactions,
   pagination: {
     page: 0,
     size: 10,
     totalPage: 0,
   } as Pagination,
+  accounts: [],
+  account: {} as AccountResponseModel
 })
+
+const searchAccounts = async () => {
+  try{
+    const service = new AccountService.AccountService()
+    const response = await service.getAccounts(userStore.idUser)
+    state.accounts = response.data.content
+  }catch(error){
+    console.error(error)
+  }
+}
+
+onMounted(()=> {
+  searchAccounts()
+})
+
+const getIndexSlide = (value: number) =>{
+ state.account = state.accounts[value]
+}
 </script>
 
 <template>
@@ -57,17 +91,15 @@ const state = reactive<state>({
         </v-col>
       </v-row>
     </v-card-title>
-    <v-card-text class="pa-5">
+    <v-card-text class="px-5">
       <v-col>
-        <v-row>
-          <v-col>
-            <WalletCardView> </WalletCardView>
-          </v-col>
-          <v-col>
-            <WalletCardView> </WalletCardView>
-          </v-col>
-          <v-col>
-            <WalletCardView> </WalletCardView>
+        <v-row class="d-none d-md-flex align-center justify-center" justify="center" >
+          <v-col cols="12">
+            <CarouselCard @index="(v) => getIndexSlide(v)" v-if="state.accounts.length">
+              <div class="card" v-for="(account, index) in state.accounts" :key="index">
+                <WalletCardView :account="account" />
+              </div>
+            </CarouselCard>
           </v-col>
         </v-row>
       </v-col>
@@ -96,7 +128,7 @@ const state = reactive<state>({
           <div v-else-if="aba === 2" class="mt-6">
             <data-table
               :headers="headers"
-              :items="state.items.transactionDTO"
+              :items="state.items.transactions"
               :totalPage="state.items.totalPage"
               :size="state.pagination.size"
               :page="state.pagination.page"
@@ -142,3 +174,5 @@ const state = reactive<state>({
   </v-card>
   <v-dialog v-model="dialog" max-width="600" />
 </template>
+<style scoped>
+</style>
