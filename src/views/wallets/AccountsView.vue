@@ -13,6 +13,7 @@ import CarouselCard from '@/components/CarouselCard.vue'
 import AccountService from '@/services/AccountService'
 import { userStore as useUserStore } from '@/stores/userStore'
 import type AccountResponseModel from '@/models/response/AccountResponseModel'
+import AccountData from './detail/AccountData.vue'
 
 const aba = ref(1)
 
@@ -104,7 +105,7 @@ const getIndexSlide = (value: number) =>{
         </v-row>
       </v-col>
       <v-row class="mt-12 px-5">
-        <v-col cols="12" sm="12" md="6" lg="12">
+        <v-col cols="12">
           <v-tabs v-model="aba" color="primary">
             <v-tab v-for="tab in tabs" :key="tab.value" :value="tab.value">
               {{ tab.text }}
@@ -113,15 +114,8 @@ const getIndexSlide = (value: number) =>{
           <!-- Conteúdo dos formulários, um para cada tab -->
           <div v-if="aba === 1">
             <v-row class="mt-6">
-              <v-col>
-                <!-- Campos do formulário para DADOS DA CONTA -->
-                <v-text-field label="Nome da Conta" variant="solo-filled" density="compact" />
-                <v-text-field label="Moeda da conta" variant="solo-filled" density="compact" />
-                <v-text-field label="Data de criação" variant="solo-filled" density="compact" />
-              </v-col>
-              <v-col>
-                <v-text-field label="Tipo da conta" variant="solo-filled" density="compact" />
-                <v-text-field label="Status da conta" variant="solo-filled" density="compact" />
+              <v-col cols="12">
+                <AccountData :account="state.account"/>
               </v-col>
             </v-row>
           </div>

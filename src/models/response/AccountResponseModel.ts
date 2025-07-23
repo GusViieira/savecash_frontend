@@ -5,4 +5,6 @@ export default interface AccountResponseModel {
   status: number
   type: number
   currency: string
+  purpose: string
+  createAt: string
 }
