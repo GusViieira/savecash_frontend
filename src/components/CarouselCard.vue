@@ -3,6 +3,10 @@ import { onMounted, nextTick, useSlots } from 'vue'
 
 const slots = useSlots()
 
+const props = defineProps<{
+  atualIndex: number
+}>()
+
   const emit = defineEmits<{
     (e: 'index', value: number): void
   }>()
@@ -14,9 +18,8 @@ onMounted(async () => {
   const leftArrow = document.querySelector('.nav-arrow.left')
   const rightArrow = document.querySelector('.nav-arrow.right')
 
-  let currentIndex = 0
+  let currentIndex = props.atualIndex
   let isAnimating = false
-
 
   function updateCarousel(newIndex: number): void {
     if (isAnimating) return

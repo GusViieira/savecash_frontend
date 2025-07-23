@@ -1,6 +1,6 @@
 <script setup lang="ts" name="WalletsView">
 import { onMounted, ref } from 'vue'
-import WalletCardView from './detail/AccountCardView.vue'
+import AccountCardView from './detail/AccountCardView.vue'
 import { reactive } from 'vue'
 import type { Pagination } from '@/models/Pagination'
 import type {
@@ -14,10 +14,12 @@ import AccountService from '@/services/AccountService'
 import { userStore as useUserStore } from '@/stores/userStore'
 import type AccountResponseModel from '@/models/response/AccountResponseModel'
 import AccountData from './detail/AccountData.vue'
+import { accountStore as useAccountStore } from '@/stores/accountStore'
 
 const aba = ref(1)
 
 const userStore = useUserStore()
+const accountStore = useAccountStore()
 
 const tabs = ref([
   { value: 1, text: 'DADOS DA CONTA' },
@@ -79,6 +81,10 @@ onMounted(()=> {
 const getIndexSlide = (value: number) =>{
  state.account = state.accounts[value]
 }
+
+const getInitialIndex = () => {
+  return state.accounts.findIndex(account => account.idAccount === accountStore.account.idAccount)
+}
 </script>
 
 <template>
@@ -96,9 +102,9 @@ const getIndexSlide = (value: number) =>{
       <v-col>
         <v-row class="d-none d-md-flex align-center justify-center" justify="center" >
           <v-col cols="12">
-            <CarouselCard @index="(v) => getIndexSlide(v)" v-if="state.accounts.length">
+            <CarouselCard @index="(v) => getIndexSlide(v)" :atualIndex="getInitialIndex()" v-if="state.accounts.length">
               <div class="card" v-for="(account, index) in state.accounts" :key="index">
-                <WalletCardView :account="account" />
+                <AccountCardView :account="account" />
               </div>
             </CarouselCard>
           </v-col>

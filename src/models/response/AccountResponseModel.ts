@@ -7,4 +7,5 @@ export default interface AccountResponseModel {
   currency: string
   purpose: string
   createAt: string
+  balance: number
 }
