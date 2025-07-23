@@ -8,4 +8,5 @@ export default interface AccountResponseModel {
   purpose: string
   createAt: string
   balance: number
+  standard: number
 }

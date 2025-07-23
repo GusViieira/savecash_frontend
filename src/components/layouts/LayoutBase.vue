@@ -62,8 +62,7 @@ const searchAccount = async () => {
     const response = await service.getAccounts(store.idUser)
     if (response.status === 200) {
       state.account = response.data.content
-      accountStore.account = state.account[0]
-      accountName.value = state.account[0].name
+      getAccountStandard()
     }
     else console.error('Failed to fetch accounts:', response.status)
   } catch (error) {
@@ -79,8 +78,17 @@ const handleAccountBtn = (account: AccountResponseModel) => {
   viewKey.value++
 }
 
+const getAccountStandard = () => {
+    let accountStandard = {} as AccountResponseModel
+    state.account.forEach(account => {
+    if(account.standard === 1)
+      accountStandard = account
+      accountName.value = account.name
+  })
+  accountStore.account = accountStandard
+}
+
 onMounted(() => {
-  console.log()
   applyThemeToBody(savedTheme)
   searchAccount()
 })

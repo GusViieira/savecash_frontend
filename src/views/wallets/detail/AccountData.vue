@@ -2,7 +2,9 @@
 import type AccountResponseModel from '@/models/response/AccountResponseModel'
 import { TYPE_ACCOUNT, STATUS_ACCOUNT, PURPOSE_ACCOUNT } from '@/utils/constants';
 import { format } from 'date-fns'
-import { onMounted, reactive, watch } from 'vue'
+import { onMounted, reactive, ref, watch } from 'vue'
+
+const standardCheckbox = ref(false)
 
 const props = defineProps<{
   account: AccountResponseModel
@@ -21,6 +23,7 @@ watch(
   () => {
     state.account = props.account
     const createAt = state.account.createAt
+    standardCheckbox.value = state.account.standard === 1 ? true : false
 
     const isFormatted = typeof createAt === 'string' && /^\d{2}\/\d{2}\/\d{4}$/.test(createAt)
 
@@ -31,6 +34,7 @@ watch(
 
 onMounted(() => {
   state.account = props.account
+  standardCheckbox.value = state.account.standard === 1 ? true : false
   state.account.createAt = state.account.createAt
     ? format(new Date(state.account.createAt), 'dd/MM/yyyy')
     : ''
@@ -103,7 +107,7 @@ onMounted(() => {
       />
     </v-col>
     <v-col class="mt-n2">
-      <v-checkbox label="Conta padrão" />
+      <v-checkbox v-model="standardCheckbox" color="primary" label="Conta padrão" />
     </v-col>
   </v-row>
 </template>
