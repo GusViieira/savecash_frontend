@@ -27,14 +27,14 @@ const handleDialog = (value: number) => {
             </template>
 
             <v-list>
-              <v-list-item value="fixed-item">
+              <v-list-item style="cursor: pointer;">
                 <v-list-item-title @click="handleDialog(1)">
                   <v-icon color="green" left>mdi-arrow-up</v-icon>
                   <span class="ml-2">Receita</span>
                 </v-list-item-title>
               </v-list-item>
               <v-divider></v-divider>
-              <v-list-item>
+              <v-list-item style="cursor: pointer;">
                 <v-list-item-title @click="handleDialog(2)">
                   <v-icon color="red" left>mdi-arrow-down</v-icon>
                   <span class="ml-2">Despesa</span>

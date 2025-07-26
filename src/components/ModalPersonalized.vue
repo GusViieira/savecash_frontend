@@ -3,6 +3,7 @@ const props = defineProps<{
   icon: string
   title: string
   width: string
+  titleColor?: string
 }>()
 
 const emit = defineEmits<{
@@ -16,7 +17,7 @@ const emit = defineEmits<{
       <v-card-item>
         <template v-slot:prepend>
           <v-card-title>
-            <v-icon :icon="props.icon" start></v-icon>
+            <v-icon :icon="props.icon" :color="titleColor" start></v-icon>
             <span class="text-h6">{{ props.title }}</span>
           </v-card-title>
         </template>

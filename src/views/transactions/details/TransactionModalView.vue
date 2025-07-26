@@ -156,7 +156,7 @@ const handleClose = (value: boolean) => {
   >
     {{ 'Suas alterações foram salvas com sucesso.' }}
   </v-snackbar>
-  <ModalPersonalized :title="title" :icon="icon" width="650" @close="(v) => handleClose(v)">
+  <ModalPersonalized :titleColor="state.createTransaction.type === 1 ? 'green' : state.createTransaction.type === 2 ? 'red' : ''" :title="title" :icon="icon" width="650" @close="(v) => handleClose(v)">
     <template #default>
       <v-row no-gutters class="mt-3">
         <v-col cols="12" xl="4" lg="4" md="4" sm="12">
