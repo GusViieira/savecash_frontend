@@ -11,11 +11,10 @@ import { userStore } from '@/stores/userStore'
 import { convertDate, convertDateToServe } from '@/utils/date'
 import { onMounted, reactive, ref } from 'vue'
 
-const isRevenue = ref(true)
-const isExpense = ref(false)
 const loading = ref(false)
 const alertSucess = ref(false)
 const title = ref('Novo Lançamento')
+const icon = ref('mdi-bank-transfer')
 
 const store = userStore()
 const accountStore = useAccountStore()
@@ -23,6 +22,7 @@ const accountStore = useAccountStore()
 const props = defineProps<{
   isUpdate?: boolean
   item?: UpdateTransactionRequestModel
+  type: number
 }>()
 
 interface state {
@@ -58,7 +58,9 @@ const submit = async () => {
     state.createTransaction.idUser = store.idUser
     state.createTransaction.idAccount = accountStore.account.idAccount
     state.createTransaction.date = convertDateToServe(state.createTransaction.date)
-    state.createTransaction.value = parseFloat(state.createTransaction.value.toString().replace(",", "."))
+    state.createTransaction.value = parseFloat(
+      state.createTransaction.value.toString().replace(',', '.'),
+    )
     console.log(state.createTransaction.value)
     const response = await service.createTransaction(state.createTransaction)
     if (response.data.content) {
@@ -98,17 +100,31 @@ const fillUpdateTransaction = () => {
 
 onMounted(() => {
   searchCategories()
-  if (props.isUpdate) {
-  console.log('Editing transaction:', props.item)
-  state.createTransaction = {
-    ...props.item,
-    ...(props.item?.date && { date: convertDate(props.item.date) }),
-  } as CreateTransactionRequestModel
-  title.value = 'Editar Lançamento'
 
-  return
-}
-  state.createTransaction.type = 1 // Default to revenue
+  state.createTransaction.type = props.type
+  state.updateTransaction.type = props.type
+
+  console.log('Transaction type:', state.createTransaction.type)
+
+  if (state.createTransaction.type === 1) {
+    title.value = 'Nova receita'
+    icon.value = 'mdi-arrow-up'
+  }
+
+  if (state.createTransaction.type === 2) {
+    title.value = 'Nova despesa'
+    icon.value = 'mdi-arrow-down'
+  }
+
+  if (props.isUpdate) {
+    console.log('Editing transaction:', props.item)
+    state.createTransaction = {
+      ...props.item,
+      ...(props.item?.date && { date: convertDate(props.item.date) }),
+    } as CreateTransactionRequestModel
+    title.value = 'Editar Lançamento'
+    return
+  }
 })
 
 const maskOptions = {
@@ -116,13 +132,21 @@ const maskOptions = {
   preProcess: (val: string) => val.replace(/[R$\s]/g, ''),
   postProcess: (val: string) => {
     if (!val) return ''
-    return val.replace('.', ',') // Converte ponto para vírgula
-  }
+    return val.replace('.', ',')
+  },
+}
+
+const handleClose = (value: boolean) => {
+  emit('close', value)
+  loading.value = false
+  alertSucess.value = false
+  state.createTransaction = {} as CreateTransactionRequestModel
+  state.updateTransaction = {} as UpdateTransactionRequestModel
 }
 </script>
 <template>
-  <LoadingComponent :value="loading"/>
-    <v-snackbar
+  <LoadingComponent :value="loading" />
+  <v-snackbar
     v-model="alertSucess"
     :timeout="4000"
     icon="mdi-check-outline"
@@ -132,32 +156,8 @@ const maskOptions = {
   >
     {{ 'Suas alterações foram salvas com sucesso.' }}
   </v-snackbar>
-  <ModalPersonalized
-    :title="title"
-    icon="mdi-bank-transfer"
-    width="650"
-    @close="(v) => emit('close', v)"
-  >
+  <ModalPersonalized :title="title" :icon="icon" width="650" @close="(v) => handleClose(v)">
     <template #default>
-      <v-row>
-        <v-col cols="12" sm="6">
-          <v-btn
-            class="mr-1"
-            :class="state.createTransaction.type === 1 ? 'button-revenue' : ''"
-            :color="state.createTransaction.type === 1 ? 'lightGreen' : ''"
-            text="Receita"
-            variant="flat"
-            @click="((isRevenue = true), (isExpense = false)), state.createTransaction.type = 1"
-          />
-          <v-btn
-            :class="state.createTransaction.type === 2 ? 'button-expense' : ''"
-            text="Despesa"
-            variant="flat"
-            :color="state.createTransaction.type === 2 ? 'lightRed' : ''"
-            @click="((isExpense = true), (isRevenue = false)), state.createTransaction.type = 2"
-          />
-        </v-col>
-      </v-row>
       <v-row no-gutters class="mt-3">
         <v-col cols="12" xl="4" lg="4" md="4" sm="12">
           <v-text-field
@@ -168,7 +168,14 @@ const maskOptions = {
             type="text"
             class="mr-2"
             :v-mask="[maskOptions, '9999999999,99']"
-            :prefix="(0).toLocaleString('pt-BR', { style: 'currency', currency: accountStore.account.currency }).replace(/\s?0,00$/, '')"
+            :prefix="
+              (0)
+                .toLocaleString('pt-BR', {
+                  style: 'currency',
+                  currency: accountStore.account.currency,
+                })
+                .replace(/\s?0,00$/, '')
+            "
             :rules="[(v) => !!v || 'Valor é obrigatório']"
           />
         </v-col>
@@ -238,13 +245,27 @@ const maskOptions = {
           <span>Recorrente</span>
         </v-col>
         <v-col cols="12" xl="9" lg="9" md="9" sm="12" class="text-end pa-0">
-          <v-btn v-if="props.isUpdate" class="bg-primary" color="purple" variant="text" rounded text="Salvar" @click="submitUpdate"/>
-          <v-btn v-if="!props.isUpdate" class="bg-primary" color="purple" variant="text" rounded text="Salvar" @click="submit"/>
+          <v-btn
+            v-if="props.isUpdate"
+            class="bg-primary"
+            color="purple"
+            variant="text"
+            rounded
+            text="Salvar"
+            @click="submitUpdate"
+          />
+          <v-btn
+            v-if="!props.isUpdate"
+            class="bg-primary"
+            color="purple"
+            variant="text"
+            rounded
+            text="Salvar"
+            @click="submit"
+          />
         </v-col>
       </v-row>
-
     </template>
-
   </ModalPersonalized>
 </template>
 <style scoped>
